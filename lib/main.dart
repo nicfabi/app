@@ -6,6 +6,7 @@ import 'pago_page.dart';
 import 'carro_compra/carrito_servicio.dart';
 import 'package:get/get.dart';
 
+//nixon
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Get.put(CarritoService());
