@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'escaneo_producto/home_page.dart';
+import 'escaneo_producto/home_page_controller.dart';
 import 'package:get/get.dart';
-import 'package:lector_facturacion/escaneo_producto/home_page.dart';
-import 'package:lector_facturacion/escaneo_producto/home_page_controller.dart';
-
 
 class Facturacionapp extends StatelessWidget {
   @override
@@ -36,30 +35,31 @@ class FacturacionScreen extends GetView<HomePageController> {
           ),
           Expanded(
             child: Obx(() => ListView.builder(
-              itemCount: controller.productos.length,
-              itemBuilder: (context, index) {
-                final producto = controller.productos[index];
-                return Card(
-                  color: Color.fromARGB(255, 243, 238, 251),
-                  child: ListTile(
-                    title:
-                        Text('${producto['nombre']} (${producto['cantidad']})'),
-                    trailing: Text('\$${producto['precio']}'),
-                  ),
-                );
-              },
-            )),
+                  itemCount: controller.productos.length,
+                  itemBuilder: (context, index) {
+                    final producto = controller.productos[index];
+                    return Card(
+                      color: Color.fromARGB(255, 243, 238, 251),
+                      child: ListTile(
+                        title: Text(
+                            '${producto['nombre']} (${producto['cantidad']})'),
+                        trailing: Text('\$${producto['precio']}'),
+                      ),
+                    );
+                  },
+                )),
           ),
           Obx(() => Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text('Total: ', style: TextStyle(fontWeight: FontWeight.bold)),
-                Text('\$${controller.total.toStringAsFixed(2)}'),
-              ],
-            ),
-          )),
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text('Total: ',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('\$${controller.total.toStringAsFixed(2)}'),
+                  ],
+                ),
+              )),
         ],
       ),
       bottomNavigationBar: CustomBottomNavBar(),

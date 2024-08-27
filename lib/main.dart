@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'escaneo_producto/home_page.dart';
+import 'escaneo_producto/home_page_controller.dart';
+import 'carro_compra/carrito_page.dart';
+import 'pago_page.dart';
+import 'carro_compra/carrito_servicio.dart';
 import 'package:get/get.dart';
-import 'package:lector_facturacion/carro_compra/carrito_servicio.dart';
-import 'package:lector_facturacion/escaneo_producto/home_page.dart';
-import 'package:lector_facturacion/escaneo_producto/home_page_controller.dart';
-import 'package:lector_facturacion/carro_compra/carrito_page.dart';
-import 'package:lector_facturacion/pago_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,17 +34,17 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Obx(() => IndexedStack(
-        index: _selectedIndex.value,
-        children: [
-          HomePage(),
-          CarritoPage(),
-          PagoPage(),
-        ],
-      )),
+            index: _selectedIndex.value,
+            children: [
+              HomePage(),
+              CarritoPage(),
+              PagoPage(),
+            ],
+          )),
       bottomNavigationBar: Obx(() => CustomBottomNavBar(
-        selectedIndex: _selectedIndex.value,
-        onItemTapped: (index) => _selectedIndex.value = index,
-      )),
+            selectedIndex: _selectedIndex.value,
+            onItemTapped: (index) => _selectedIndex.value = index,
+          )),
     );
   }
 }
@@ -67,11 +67,13 @@ class CustomBottomNavBar extends StatelessWidget {
       ),
       child: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio' ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
           BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: 'Escanear'),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Carrito'),
-          BottomNavigationBarItem(icon: Icon(Icons.attach_money), label: 'Pago'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label:'Perfil'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart), label: 'Carrito'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.attach_money), label: 'Pago'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
         ],
         currentIndex: selectedIndex,
         selectedItemColor: Colors.white,

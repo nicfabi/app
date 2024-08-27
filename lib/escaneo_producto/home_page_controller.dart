@@ -1,7 +1,7 @@
+import 'package:app/carro_compra/carrito_servicio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:lector_facturacion/carro_compra/carrito_servicio.dart';
 
 class HomePageController extends GetxController {
   final valorCodigoBarras = ''.obs;
