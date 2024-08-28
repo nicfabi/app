@@ -9,8 +9,8 @@ class CarritoService extends GetxController {
 
   List<Map<String, dynamic>> get productos => _productos;
 
-  double get total => _productos.fold(
-      0.0, (sum, producto) => sum + (producto['precio'] as double));
+ get total => _productos.fold(
+      0.0, (sum, producto) => sum + (producto['PRICE'] ));
 
   // Método para agregar producto desde la API
   Future<void> agregarProductoAPI(
@@ -18,8 +18,10 @@ class CarritoService extends GetxController {
     final pr = ProgressDialog(context,
         type: ProgressDialogType.normal, isDismissible: true);
 
-    final url = 'microtech.icu:6969/product/${codigoProducto}';
+    final url = 'http://microtech.icu:6969/product/${codigoProducto}';
+    print('url');
     final response = await http.get(Uri.parse(url));
+
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
@@ -38,6 +40,43 @@ class CarritoService extends GetxController {
     pr.hide();
   }
 
+
+
+
+    Future<void> agregarCarrito(
+      BuildContext context, List carrito) async {
+
+
+       final headers = {
+    'Content-Type': 'application/json', // Tipo de contenido
+    'Authorization': 'Bearer your_token_here', // Autenticación (si es necesario)
+  };
+
+  // Opcional: Define el cuerpo de la solicitud
+  final body = '{"key1": "value1", "key2": "value2"}';
+
+    final url = 'http://microtech.icu:6969/product/compra}';
+    print('url');
+    
+
+      final response = await http.post(
+    Uri.parse(url),
+    headers: headers,
+    body: body,
+  );
+
+
+    final data = jsonDecode(response.body);
+    print(data);
+
+    if (response.statusCode == 200) {
+      print("holi");
+  }
+
+
+
+
+
   // Métodos locales del carrito
   void agregarProductoLocal(Map<String, dynamic> producto) {
     _productos.add(producto);
@@ -50,4 +89,5 @@ class CarritoService extends GetxController {
   void limpiarCarrito() {
     _productos.clear();
   }
+}
 }

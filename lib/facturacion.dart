@@ -54,9 +54,9 @@ class FacturacionScreen extends GetView<HomePageController> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text('Total: ',
+                    /* Text('Total: ',
                         style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text('\$${controller.total.toStringAsFixed(2)}'),
+                    Text('\$${controller.total.toStringAsFixed(2)}'), */
                   ],
                 ),
               )),
