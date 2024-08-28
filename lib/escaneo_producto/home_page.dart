@@ -19,11 +19,6 @@ class HomePage extends GetView<HomePageController> {
               child: Text('Escanear Código'),
               onPressed: () => controller.escanearCodigoBarras(context),
             ),
-            SizedBox(height: 20),
-            Obx(() => Text(
-                  'Último código escaneado: ${controller.valorCodigoBarras.value}',
-                  style: TextStyle(fontSize: 18),
-                )),
           ],
         ),
       ),
