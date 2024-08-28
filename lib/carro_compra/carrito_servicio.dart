@@ -16,11 +16,7 @@ class CarritoService extends GetxController {
   Future<void> agregarProductoAPI(
       BuildContext context, String codigoProducto) async {
     final pr = ProgressDialog(context,
-        type: ProgressDialogType.normal, isDismissible: false);
-    pr.style(
-      message: 'Buscando producto...',
-    );
-    pr.show();
+        type: ProgressDialogType.normal, isDismissible: true);
 
     final url = 'http://192.168.39.193:3000/product/${codigoProducto}';
     final response = await http.get(Uri.parse(url));
