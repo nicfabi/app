@@ -58,7 +58,7 @@ class CustomBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Color(0xFF09184D),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
@@ -66,7 +66,7 @@ class CustomBottomNavBar extends StatelessWidget {
         ),
       ),
       child: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
           BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: 'Escanear'),
           BottomNavigationBarItem(

@@ -42,8 +42,8 @@ class FacturacionScreen extends GetView<HomePageController> {
                       color: Color.fromARGB(255, 243, 238, 251),
                       child: ListTile(
                         title: Text(
-                            '${producto['nombre']} (${producto['cantidad']})'),
-                        trailing: Text('\$${producto['precio']}'),
+                            '${producto['NAME']} (${producto['cantidad']})'),
+                        trailing: Text('\$${producto['PRICE']}'),
                       ),
                     );
                   },
