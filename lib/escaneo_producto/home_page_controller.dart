@@ -18,19 +18,11 @@ class HomePageController extends GetxController {
       ScanMode.BARCODE,
     );
 
-    if (barcodeScanRes != '-1') {
-      valorCodigoBarras.value = barcodeScanRes;
-      // Simular la adición de producto
-      final producto = {
-        'id': barcodeScanRes,
-        'nombre': 'Producto $barcodeScanRes',
-        'cantidad': 1,
-        'precio': 10.0,
-        'urlImagen': 'https://via.placeholder.com/150',
-      };
-      _carritoService.agregarProducto(producto);
-    } else {
+    if (barcodeScanRes == '-1') {
       Get.snackbar('Cancelado', 'Lectura Cancelada');
+    } else {
+      update();
+      Get.find<CarritoService>().agregarProductoAPI(context, barcodeScanRes);
     }
   }
 }
