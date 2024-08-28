@@ -18,13 +18,13 @@ class CarritoService extends GetxController {
     final pr = ProgressDialog(context,
         type: ProgressDialogType.normal, isDismissible: true);
 
-    final url = 'http://192.168.39.193:3000/product/${codigoProducto}';
+    final url = 'microtech.icu:6969/product/${codigoProducto}';
     final response = await http.get(Uri.parse(url));
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
       // Si el servidor devuelve un 200 OK, parseamos el JSON
-      data['IMAGE'] = 'http://192.168.39.193:3000/${data['IMAGE']}';
+      data['IMAGE'] = 'microtech.icu/product/${data['IMAGE']}';
       Map<String, dynamic> nuevoProducto = data;
 
       // Agregar producto a la lista
