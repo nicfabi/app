@@ -22,14 +22,14 @@ class FacturacionScreen extends GetView<HomePageController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('MicroTech Solutions',
+        title: const Text('MicroTech Solutions',
             style: TextStyle(color: Color(0xFFFAFAFA))),
-        backgroundColor: Color(0xFF7E57C2),
+        backgroundColor: const Color(0xFF7E57C2),
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
             child: Text('Datos tienda',
                 style: TextStyle(color: Color(0xFF455A64))),
           ),
@@ -39,7 +39,7 @@ class FacturacionScreen extends GetView<HomePageController> {
                   itemBuilder: (context, index) {
                     final producto = controller.productos[index];
                     return Card(
-                      color: Color.fromARGB(255, 243, 238, 251),
+                      color: const Color.fromARGB(255, 243, 238, 251),
                       child: ListTile(
                         title: Text(
                             '${producto['NAME']} (${producto['cantidad']})'),
@@ -49,8 +49,8 @@ class FacturacionScreen extends GetView<HomePageController> {
                   },
                 )),
           ),
-          Obx(() => Padding(
-                padding: const EdgeInsets.all(16.0),
+          Obx(() => const Padding(
+                padding: EdgeInsets.all(16.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -78,9 +78,9 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Color(0xFF09184D),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(10),
@@ -93,15 +93,15 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           alignment: Alignment.bottomCenter,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(10),
                 topRight: Radius.circular(10),
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20),
               ),
               child: BottomNavigationBar(
-                backgroundColor: Color(0xFF09184D),
-                selectedItemColor: Color(0xFFFAFAFA),
+                backgroundColor: const Color(0xFF09184D),
+                selectedItemColor: const Color(0xFFFAFAFA),
                 unselectedItemColor: Colors.white,
                 type: BottomNavigationBarType.fixed,
                 elevation: 0,
@@ -139,10 +139,11 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           shape: BoxShape.circle,
           color: _selectedIndex == index ? Colors.white : Colors.transparent,
         ),
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Icon(
           icon,
-          color: _selectedIndex == index ? Color(0xFF09184D) : Colors.white,
+          color:
+              _selectedIndex == index ? const Color(0xFF09184D) : Colors.white,
         ),
       ),
       label: label,

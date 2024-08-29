@@ -7,8 +7,8 @@ class PagoPage extends GetView<CarritoService> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pago', style: TextStyle(color: Color(0xFFFAFAFA))),
-        backgroundColor: Color(0xFF7E57C2),
+        title: const Text('Pago', style: TextStyle(color: Color(0xFFFAFAFA))),
+        backgroundColor: const Color(0xFF7E57C2),
       ),
       body: Center(
         child: Column(
@@ -16,17 +16,24 @@ class PagoPage extends GetView<CarritoService> {
           children: [
             Obx(() => Text(
                   'Total a pagar: \$${controller.total.toStringAsFixed(2)}',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 24, fontWeight: FontWeight.bold),
                 )),
-            SizedBox(height: 20),
-            ElevatedButton(
-              child: Text('Realizar Pago'),
-              onPressed: () {
-                controller.agregarCarrito(context);
-                Get.snackbar('Pago', 'Pago realizado con éxito');
-                controller.limpiarCarrito();
-              },
-            ),
+            const SizedBox(height: 20),
+            Obx(() {
+              if (controller.total > 0.00) {
+                return ElevatedButton(
+                  child: const Text('Realizar Pago'),
+                  onPressed: () {
+                    controller.agregarCarrito(context);
+                    Get.snackbar('Pago', 'Pago realizado con éxito');
+                    controller.limpiarCarrito();
+                  },
+                );
+              } else {
+                return Container(); // or any other widget you want to return when the condition is not met
+              }
+            })
           ],
         ),
       ),
