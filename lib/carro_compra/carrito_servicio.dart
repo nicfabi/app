@@ -9,8 +9,8 @@ class CarritoService extends GetxController {
 
   List<Map<String, dynamic>> get productos => _productos;
 
-  double get total => _productos.fold(
-      0.0, (sum, producto) => sum + (producto['precio'] as double));
+ get total => _productos.fold(
+      0.0, (sum, producto) => sum + (producto['PRICE'] ));
 
   // Método para agregar producto desde la API
   Future<void> agregarProductoAPI(
@@ -18,8 +18,10 @@ class CarritoService extends GetxController {
     final pr = ProgressDialog(context,
         type: ProgressDialogType.normal, isDismissible: true);
 
-    final url = 'microtech.icu:6969/product/${codigoProducto}';
+    final url = 'http://microtech.icu:6969/product/${codigoProducto}';
+    
     final response = await http.get(Uri.parse(url));
+
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
@@ -37,6 +39,37 @@ class CarritoService extends GetxController {
     }
     pr.hide();
   }
+
+
+
+
+     Future<void> agregarCarrito(
+      BuildContext context) async {
+
+
+       final headers = {
+    'Content-Type': 'application/json',
+  };
+
+
+
+  final body = jsonEncode(productos);
+  
+
+    const url = 'http://microtech.icu:6969/product/compra'; 
+      final response = await http.post(
+    Uri.parse(url),
+    headers: headers,
+    body: body,
+  );
+    if (response.statusCode == 200) {
+      final id_carrito=response.body;
+      print(id_carrito);
+  }
+      }
+
+
+
 
   // Métodos locales del carrito
   void agregarProductoLocal(Map<String, dynamic> producto) {
