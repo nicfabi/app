@@ -19,7 +19,7 @@ class CarritoService extends GetxController {
         type: ProgressDialogType.normal, isDismissible: true);
 
     final url = 'http://microtech.icu:6969/product/${codigoProducto}';
-    print('url');
+    
     final response = await http.get(Uri.parse(url));
 
     final data = jsonDecode(response.body);
@@ -43,19 +43,19 @@ class CarritoService extends GetxController {
 
 
 
-    Future<void> agregarCarrito(
-      BuildContext context, List carrito) async {
+     Future<void> agregarCarrito(
+      BuildContext context) async {
 
 
        final headers = {
-    'Content-Type': 'application/json', // Tipo de contenido
-    'Authorization': 'Bearer your_token_here', // Autenticación (si es necesario)
+    'Content-Type': 'application/json',
   };
 
-  // Opcional: Define el cuerpo de la solicitud
-  final body = '{"key1": "value1", "key2": "value2"}';
+  final body = '{$productos}';
 
-    final url = 'http://microtech.icu:6969/product/compra}';
+    final url = 'http://microtech.icu:6969/product/compra'; 
+
+   
     print('url');
     
 
@@ -72,7 +72,7 @@ class CarritoService extends GetxController {
     if (response.statusCode == 200) {
       print("holi");
   }
-
+      }
 
 
 
@@ -89,5 +89,4 @@ class CarritoService extends GetxController {
   void limpiarCarrito() {
     _productos.clear();
   }
-}
 }

@@ -22,7 +22,7 @@ class PagoPage extends GetView<CarritoService> {
             ElevatedButton(
               child: Text('Realizar Pago'),
               onPressed: () {
-                // Implementar lógica de pago aquí
+                controller.agregarCarrito(context);
                 Get.snackbar('Pago', 'Pago realizado con éxito');
                 controller.limpiarCarrito();
               },
