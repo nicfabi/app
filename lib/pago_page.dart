@@ -27,6 +27,8 @@ class PagoPage extends GetView<CarritoService> {
                   onPressed: () {
                     controller.agregarCarrito(context);
                     Get.snackbar('Pago', 'Pago realizado con éxito');
+                    Get.snackbar(
+                        'Factura Enviada', "Factura enviada con éxito!");
                     controller.limpiarCarrito();
                   },
                 );

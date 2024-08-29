@@ -15,29 +15,33 @@ class CarritoService extends GetxController {
   // Método para agregar producto desde la API
   Future<void> agregarProductoAPI(
       BuildContext context, String codigoProducto) async {
-    final pr = ProgressDialog(context,
-        type: ProgressDialogType.normal, isDismissible: true);
+    try {
+      final pr = ProgressDialog(context,
+          type: ProgressDialogType.normal, isDismissible: true);
 
-    final url = 'http://microtech.icu:6969/product/${codigoProducto}';
+      final url = 'http://microtech.icu:6969/product/${codigoProducto}';
 
-    final response = await http.get(Uri.parse(url));
+      final response = await http.get(Uri.parse(url));
 
-    final data = jsonDecode(response.body);
+      final data = jsonDecode(response.body);
 
-    if (response.statusCode == 200) {
-      // Si el servidor devuelve un 200 OK, parseamos el JSON
-      data['IMAGE'] = 'microtech.icu/product/${data['IMAGE']}';
-      Map<String, dynamic> nuevoProducto = data;
+      if (response.statusCode == 200) {
+        // Si el servidor devuelve un 200 OK, parseamos el JSON
+        data['IMAGE'] = 'microtech.icu/product/${data['IMAGE']}';
+        Map<String, dynamic> nuevoProducto = data;
 
-      // Agregar producto a la lista
-      _productos.add(nuevoProducto);
+        // Agregar producto a la lista
+        _productos.add(nuevoProducto);
 
-      Get.snackbar('Producto Escaneado', data['NAME']);
-    } else {
-      // Si el servidor no devuelve un 200 OK, muestra un error
-      Get.snackbar('Error', data['status']);
+        Get.snackbar('Producto Escaneado', data['NAME']);
+      } else {
+        // Si el servidor no devuelve un 200 OK, muestra un error
+        Get.snackbar('Error', data['status']);
+      }
+      pr.hide();
+    } catch (e) {
+      print(e);
     }
-    pr.hide();
   }
 
   Future<void> agregarCarrito(BuildContext context) async {
@@ -54,8 +58,27 @@ class CarritoService extends GetxController {
       body: body,
     );
     if (response.statusCode == 200) {
-      final id_carrito = response.body;
-      print(id_carrito);
+      final data = jsonDecode(response.body);
+      final carritoId = data['id_carro'][0]["ID"];
+      enviarFactura(context, carritoId);
+    }
+  }
+
+  Future<void> enviarFactura(BuildContext context, int soldCartId) async {
+    final headers = {
+      'Content-Type': 'application/json',
+    };
+
+    final body = jsonEncode({'soldCartId': soldCartId});
+
+    const url = 'http://microtech.icu:8888/bill/send';
+    final response = await http.post(
+      Uri.parse(url),
+      headers: headers,
+      body: body,
+    );
+    if (response.statusCode == 200) {
+      print("Factura enviada correctamente: ${response.body}");
     }
   }
 
