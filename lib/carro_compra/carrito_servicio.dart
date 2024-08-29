@@ -51,26 +51,20 @@ class CarritoService extends GetxController {
     'Content-Type': 'application/json',
   };
 
-  final body = '{$productos}';
 
-    final url = 'http://microtech.icu:6969/product/compra'; 
 
-   
-    print('url');
-    
+  final body = jsonEncode(productos);
+  
 
+    const url = 'http://microtech.icu:6969/product/compra'; 
       final response = await http.post(
     Uri.parse(url),
     headers: headers,
     body: body,
   );
-
-
-    final data = jsonDecode(response.body);
-    print(data);
-
     if (response.statusCode == 200) {
-      print("holi");
+      final id_carrito=response.body;
+      print(id_carrito);
   }
       }
 
