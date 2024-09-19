@@ -1,9 +1,11 @@
 import 'package:app/carro_compra/carrito_page.dart';
 import 'package:app/menu_principal/ver_productos.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
 class MenuOpcionesHome extends StatelessWidget {
-  const MenuOpcionesHome({super.key});
+  final RxInt selectedIndexValue;
+  const MenuOpcionesHome({super.key, required RxInt selectedIndex, required this.selectedIndexValue});
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +24,7 @@ class MenuOpcionesHome extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => VerProductosPage(),
-                  ),
-                );
+                selectedIndexValue.value = 4;
               },
               child: SizedBox(
                 width: 300,

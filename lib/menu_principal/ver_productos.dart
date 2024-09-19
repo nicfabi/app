@@ -46,7 +46,10 @@ class VerProductosPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Productos'),
+        title: const Text('Todos los Productos',
+            style: TextStyle(color: Color(0xFFFAFAFA))),
+        backgroundColor: const Color(0xFF09184D),
+        centerTitle: true,
       ),
       body: Obx(() {
         // Si no hay productos, mostrar un indicador de carga o mensaje

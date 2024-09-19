@@ -38,7 +38,7 @@ class MainScreen extends StatelessWidget {
       body: Obx(() => IndexedStack(
             index: _selectedIndex.value,
             children: [
-              MenuOpcionesHome(),   // 0
+              MenuOpcionesHome(selectedIndex: _selectedIndex, selectedIndexValue: _selectedIndex),   // 0
               HomePage(),           // 1
               CarritoPage(),        // 2
               PagoPage(),           // 3
