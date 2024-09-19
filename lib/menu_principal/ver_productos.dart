@@ -19,7 +19,7 @@ class ProductoService extends GetxController {
       _productos.clear();
       data.forEach((producto) {
         producto['IMAGE'] =
-            'http://microtech.icu/product/${producto['IMAGE']}';
+            'http://microtech.icu:6969/product/${producto['IMAGE']}';
         _productos.add(Map<String, dynamic>.from(producto));
       });
       Get.snackbar('Productos cargados',
