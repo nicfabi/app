@@ -11,7 +11,7 @@ class MenuOpcionesHome extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Menu Principal',
             style: TextStyle(color: Color(0xFFFAFAFA))),
-        backgroundColor: const Color(0xFF7E57C2),
+        backgroundColor: const Color(0xFF09184D),
         centerTitle: true,
       ),
       body: Padding(
@@ -41,7 +41,7 @@ class MenuOpcionesHome extends StatelessWidget {
                     padding: EdgeInsets.all(16.0),
                     child: Row(
                       children: <Widget>[
-                        Icon(Icons.menu, size: 25, color: Colors.purple),
+                        Icon(Icons.menu, size: 25, color: Color(0xFF09184D)),
                         SizedBox(width: 16),
                         Text(
                           'Ver Productos',
@@ -75,7 +75,7 @@ class MenuOpcionesHome extends StatelessWidget {
                     padding: EdgeInsets.all(16.0),
                     child: Row(
                       children: <Widget>[
-                        Icon(Icons.add_box, size: 25, color: Colors.purple),
+                        Icon(Icons.add_box, size: 25, color: Color(0xFF09184D)),
                         SizedBox(width: 16),
                         Text(
                           'Agregar Productos',
@@ -109,7 +109,7 @@ class MenuOpcionesHome extends StatelessWidget {
                     padding: EdgeInsets.all(16.0),
                     child: Row(
                       children: <Widget>[
-                        Icon(Icons.edit, size: 25, color: Colors.purple),
+                        Icon(Icons.edit, size: 25, color: Color(0xFF09184D)),
                         SizedBox(width: 16),
                         Text(
                           'Editar Productos',
@@ -143,7 +143,7 @@ class MenuOpcionesHome extends StatelessWidget {
                     padding: EdgeInsets.all(16.0),
                     child: Row(
                       children: <Widget>[
-                        Icon(Icons.delete, size: 25, color: Colors.purple),
+                        Icon(Icons.delete, size: 25, color: Color(0xFF09184D)),
                         SizedBox(width: 16),
                         Text(
                           'Eliminar Productos',
@@ -177,8 +177,8 @@ class MenuOpcionesHome extends StatelessWidget {
                     padding: EdgeInsets.all(16.0),
                     child: Row(
                       children: <Widget>[
-                        Icon(Icons.edit, size: 25, color: Colors.purple),
-                        Icon(Icons.person, size: 25, color: Colors.purple),
+                        Icon(Icons.edit, size: 25, color: Color(0xFF09184D)),
+                        Icon(Icons.person, size: 25, color: Color(0xFF09184D)),
                         SizedBox(width: 16),
                         Text(
                           'Editar Proveedores',
