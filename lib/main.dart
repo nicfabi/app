@@ -1,3 +1,4 @@
+import 'package:app/visualizaci%C3%B3n_productos/productos_page.dart';
 import 'package:flutter/material.dart';
 import 'escaneo_producto/home_page.dart';
 import 'escaneo_producto/home_page_controller.dart';
@@ -36,6 +37,7 @@ class MainScreen extends StatelessWidget {
       body: Obx(() => IndexedStack(
             index: _selectedIndex.value,
             children: [
+              MenuOpcionesHome(),
               HomePage(),
               CarritoPage(),
               PagoPage(),

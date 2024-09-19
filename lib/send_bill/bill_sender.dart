@@ -13,6 +13,7 @@ class BillSender extends GetView<CarritoService> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Pago', style: TextStyle(color: Color(0xFFFAFAFA))),
+        centerTitle: true,
         backgroundColor: const Color(0xFF7E57C2),
       ),
       body: Center(

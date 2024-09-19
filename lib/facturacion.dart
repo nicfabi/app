@@ -25,6 +25,7 @@ class FacturacionScreen extends GetView<HomePageController> {
         title: const Text('MicroTech Solutions',
             style: TextStyle(color: Color(0xFFFAFAFA))),
         backgroundColor: const Color(0xFF7E57C2),
+        centerTitle: true,
       ),
       body: Column(
         children: [
