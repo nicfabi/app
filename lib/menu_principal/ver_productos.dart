@@ -9,31 +9,30 @@ class ProductoService extends GetxController {
   List<Map<String, dynamic>> get productos => _productos;
 
   Future<void> obtenerProductos() async {
-  try {
-    const url = 'http://microtech.icu:6969/allProducts';
-    final response = await http.get(Uri.parse(url));
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
-    if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-      _productos.clear();
-      data.forEach((producto) {
-        producto['IMAGE'] =
-            'http://microtech.icu:6969/product/${producto['IMAGE']}';
-        _productos.add(Map<String, dynamic>.from(producto));
-      });
-      Get.snackbar('Productos cargados',
-          'Todos los productos se han cargado correctamente.');
-    } else {
-      Get.snackbar('Error', 'No se pudieron cargar los productos.');
+    try {
+      const url = 'http://microtech.icu:6969/allProducts';
+      final response = await http.get(Uri.parse(url));
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        _productos.clear();
+        data.forEach((producto) {
+          producto['IMAGE'] =
+              'http://microtech.icu/product/${producto['IMAGE']}';
+          _productos.add(Map<String, dynamic>.from(producto));
+        });
+        Get.snackbar('Productos cargados',
+            'Todos los productos se han cargado correctamente.');
+      } else {
+        Get.snackbar('Error', 'No se pudieron cargar los productos.');
+      }
+    } catch (e) {
+      print(e);
+      Get.snackbar(
+          'Error', 'Ocurrió un error al intentar cargar los productos.');
     }
-  } catch (e) {
-    print(e);
-    Get.snackbar(
-        'Error', 'Ocurrió un error al intentar cargar los productos.');
   }
-}
-
 }
 
 class VerProductosPage extends StatelessWidget {
@@ -61,15 +60,21 @@ class VerProductosPage extends StatelessWidget {
           itemBuilder: (context, index) {
             final producto = carritoService.productos[index];
             return Card(
-              margin: EdgeInsets.all(10),
-              child: ListTile(
-                leading:
-                    Image.network(producto['IMAGE'], width: 50, height: 50),
-                title: Text(producto['NAME']),
-                subtitle: Text('Precio: \$${producto['PRICE'].toString()}'),
-                trailing: Icon(Icons.add_shopping_cart),
-              ),
-            );
+                margin: EdgeInsets.all(10),
+                child: ListTile(
+                  leading: SizedBox(
+                    width: 50, // Establece un ancho fijo
+                    height: 50, // Establece una altura fija
+                    child: Image.network(
+                      producto['IMAGE'],
+                      fit: BoxFit
+                          .cover, // Asegúrate de que la imagen se ajuste al contenedor
+                    ),
+                  ),
+                  title: Text(producto['NAME']),
+                  subtitle: Text('Precio: \$${producto['PRICE'].toString()}'),
+                  trailing: Icon(Icons.add_shopping_cart),
+                ));
           },
         );
       }),
