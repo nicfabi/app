@@ -9,6 +9,7 @@ class PagoPage extends GetView<CarritoService> {
       appBar: AppBar(
         title: const Text('Pago', style: TextStyle(color: Color(0xFFFAFAFA))),
         backgroundColor: const Color(0xFF7E57C2),
+        centerTitle: true,
       ),
       body: Center(
         child: Column(

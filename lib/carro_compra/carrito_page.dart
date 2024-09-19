@@ -11,6 +11,7 @@ class CarritoPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Carrito de Compras', style: TextStyle(color: Color(0xFFFAFAFA))),
+        centerTitle: true,
         backgroundColor: Color(0xFF7E57C2),
       ),
       body: Obx(() => ListView.builder(
