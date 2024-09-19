@@ -1,4 +1,5 @@
-import 'package:app/visualizaci%C3%B3n_productos/productos_page.dart';
+import 'package:app/menu_principal/productos_page.dart';
+import 'package:app/menu_principal/ver_productos.dart';
 import 'package:flutter/material.dart';
 import 'escaneo_producto/home_page.dart';
 import 'escaneo_producto/home_page_controller.dart';
@@ -37,10 +38,11 @@ class MainScreen extends StatelessWidget {
       body: Obx(() => IndexedStack(
             index: _selectedIndex.value,
             children: [
-              MenuOpcionesHome(),
-              HomePage(),
-              CarritoPage(),
-              PagoPage(),
+              MenuOpcionesHome(),   // 0
+              HomePage(),           // 1
+              CarritoPage(),        // 2
+              PagoPage(),           // 3
+              VerProductosPage(),      // 4
             ],
           )),
       bottomNavigationBar: Obx(() => CustomBottomNavBar(

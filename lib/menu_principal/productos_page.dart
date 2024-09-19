@@ -1,4 +1,5 @@
 import 'package:app/carro_compra/carrito_page.dart';
+import 'package:app/menu_principal/ver_productos.dart';
 import 'package:flutter/material.dart';
 
 class MenuOpcionesHome extends StatelessWidget {
@@ -24,7 +25,7 @@ class MenuOpcionesHome extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CarritoPage(),
+                    builder: (context) => VerProductosPage(),
                   ),
                 );
               },
