@@ -22,8 +22,6 @@ class ProductoService extends GetxController {
               'http://microtech.icu:6969/product/${producto['IMAGE']}';
           _productos.add(Map<String, dynamic>.from(producto));
         });
-        Get.snackbar('Productos cargados',
-            'Todos los productos se han cargado correctamente.');
       } else {
         Get.snackbar('Error', 'No se pudieron cargar los productos.');
       }
@@ -35,20 +33,20 @@ class ProductoService extends GetxController {
   }
 
   Future<void> DeleteProduct(
-      BuildContext context, int codigoProducto) async {
+      BuildContext context, String codigoProducto) async {
     try {
-      print(codigoProducto);
-      final url = 'http://microtech.icu:6969/product/${codigoProducto}';
+      final url = 'http://microtech.icu:6969/product/$codigoProducto';
       final response = await http.delete(Uri.parse(url));
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 204) {
         Get.snackbar('Producto Eliminado', 'Producto eliminado correctamente.');
+        await obtenerProductos();
       } else {
         Get.snackbar('Error', 'No se pudo eliminar el producto.');
       }
     } catch (e) {
-      print(e);
+      print('Error occurred: $e');
       Get.snackbar(
           'Error', 'Ocurrió un error al intentar eliminar el producto.');
     }
@@ -88,8 +86,8 @@ class VerProductosPage extends StatelessWidget {
                 subtitle: Text('Precio: \$${producto['PRICE'].toString()}'),
                 trailing: IconButton(
                   icon: Icon(Icons.delete),
-                  onPressed: () => carritoService.DeleteProduct(
-                      context, producto['ID']),
+                  onPressed: () =>
+                      carritoService.DeleteProduct(context, producto['ID']),
                 ),
               ),
             );
