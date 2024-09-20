@@ -35,8 +35,9 @@ class ProductoService extends GetxController {
   }
 
   Future<void> DeleteProduct(
-      BuildContext context, String codigoProducto) async {
+      BuildContext context, int codigoProducto) async {
     try {
+      print(codigoProducto);
       final url = 'http://microtech.icu:6969/product/${codigoProducto}';
       final response = await http.delete(Uri.parse(url));
       print('Response status: ${response.statusCode}');
@@ -88,7 +89,7 @@ class VerProductosPage extends StatelessWidget {
                 trailing: IconButton(
                   icon: Icon(Icons.delete),
                   onPressed: () => carritoService.DeleteProduct(
-                      context, producto['PRODUCT_ID']),
+                      context, producto['ID']),
                 ),
               ),
             );
