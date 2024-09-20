@@ -22,6 +22,8 @@ class ProductoService extends GetxController {
               'http://microtech.icu:6969/product/${producto['IMAGE']}';
           _productos.add(Map<String, dynamic>.from(producto));
         });
+        Get.snackbar('Productos cargados',
+            'Todos los productos se han cargado correctamente.');
       } else {
         Get.snackbar('Error', 'No se pudieron cargar los productos.');
       }
@@ -42,7 +44,7 @@ class ProductoService extends GetxController {
       if (response.statusCode == 200) {
         Get.snackbar('Producto Eliminado', 'Producto eliminado correctamente.');
       } else {
-        Get.snackbar('Error', 'No se pudieron cargar los productos.');
+        Get.snackbar('Error', 'No se pudo eliminar el producto.');
       }
     } catch (e) {
       print(e);
@@ -83,7 +85,11 @@ class VerProductosPage extends StatelessWidget {
                     Image.network(producto['IMAGE'], width: 50, height: 50),
                 title: Text(producto['NAME']),
                 subtitle: Text('Precio: \$${producto['PRICE'].toString()}'),
-                trailing: Icon(Icons.add_shopping_cart),
+                trailing: IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () => carritoService.DeleteProduct(
+                      context, producto['PRODUCT_ID']),
+                ),
               ),
             );
           },
