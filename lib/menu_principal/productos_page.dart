@@ -17,7 +17,7 @@ class MenuOpcionesHome extends StatelessWidget {
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(30.0),
+        padding: const EdgeInsets.all(60.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -50,15 +50,10 @@ class MenuOpcionesHome extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 3),
+            const SizedBox(height: 16),
             GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CarritoPage(),
-                  ),
-                );
+                selectedIndexValue.value = 4;
               },
               child: SizedBox(
                 width: 300,
@@ -84,75 +79,7 @@ class MenuOpcionesHome extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 3),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CarritoPage(),
-                  ),
-                );
-              },
-              child: SizedBox(
-                width: 300,
-                height: 80,
-                child: Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Row(
-                      children: <Widget>[
-                        Icon(Icons.edit, size: 25, color: Color(0xFF09184D)),
-                        SizedBox(width: 16),
-                        Text(
-                          'Editar Productos',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 3),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CarritoPage(),
-                  ),
-                );
-              },
-              child: SizedBox(
-                width: 300,
-                height: 80,
-                child: Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Row(
-                      children: <Widget>[
-                        Icon(Icons.delete, size: 25, color: Color(0xFF09184D)),
-                        SizedBox(width: 16),
-                        Text(
-                          'Eliminar Productos',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 3),
+            const SizedBox(height: 16),
             GestureDetector(
               onTap: () {
                 Navigator.push(

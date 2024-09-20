@@ -1,5 +1,5 @@
 import 'package:app/menu_principal/productos_page.dart';
-import 'package:app/menu_principal/ver_productos.dart';
+import 'package:app/menu_principal/ver_productos.dart'; // Add this line
 import 'package:flutter/material.dart';
 import 'escaneo_producto/home_page.dart';
 import 'escaneo_producto/home_page_controller.dart';

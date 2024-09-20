@@ -19,11 +19,9 @@ class ProductoService extends GetxController {
         _productos.clear();
         data.forEach((producto) {
           producto['IMAGE'] =
-              'http://microtech.icu/product/${producto['IMAGE']}';
+              'http://microtech.icu:6969/product/${producto['IMAGE']}';
           _productos.add(Map<String, dynamic>.from(producto));
         });
-        Get.snackbar('Productos cargados',
-            'Todos los productos se han cargado correctamente.');
       } else {
         Get.snackbar('Error', 'No se pudieron cargar los productos.');
       }
@@ -31,6 +29,25 @@ class ProductoService extends GetxController {
       print(e);
       Get.snackbar(
           'Error', 'Ocurrió un error al intentar cargar los productos.');
+    }
+  }
+
+  Future<void> DeleteProduct(
+      BuildContext context, String codigoProducto) async {
+    try {
+      final url = 'http://microtech.icu:6969/product/${codigoProducto}';
+      final response = await http.delete(Uri.parse(url));
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      if (response.statusCode == 200) {
+        Get.snackbar('Producto Eliminado', 'Producto eliminado correctamente.');
+      } else {
+        Get.snackbar('Error', 'No se pudieron cargar los productos.');
+      }
+    } catch (e) {
+      print(e);
+      Get.snackbar(
+          'Error', 'Ocurrió un error al intentar eliminar el producto.');
     }
   }
 }
@@ -46,10 +63,7 @@ class VerProductosPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Todos los Productos',
-            style: TextStyle(color: Color(0xFFFAFAFA))),
-        backgroundColor: const Color(0xFF09184D),
-        centerTitle: true,
+        title: Text('Productos'),
       ),
       body: Obx(() {
         // Si no hay productos, mostrar un indicador de carga o mensaje
@@ -63,21 +77,15 @@ class VerProductosPage extends StatelessWidget {
           itemBuilder: (context, index) {
             final producto = carritoService.productos[index];
             return Card(
-                margin: EdgeInsets.all(10),
-                child: ListTile(
-                  leading: SizedBox(
-                    width: 50, // Establece un ancho fijo
-                    height: 50, // Establece una altura fija
-                    child: Image.network(
-                      producto['IMAGE'],
-                      fit: BoxFit
-                          .cover, // Asegúrate de que la imagen se ajuste al contenedor
-                    ),
-                  ),
-                  title: Text(producto['NAME']),
-                  subtitle: Text('Precio: \$${producto['PRICE'].toString()}'),
-                  trailing: Icon(Icons.add_shopping_cart),
-                ));
+              margin: EdgeInsets.all(10),
+              child: ListTile(
+                leading:
+                    Image.network(producto['IMAGE'], width: 50, height: 50),
+                title: Text(producto['NAME']),
+                subtitle: Text('Precio: \$${producto['PRICE'].toString()}'),
+                trailing: Icon(Icons.add_shopping_cart),
+              ),
+            );
           },
         );
       }),
