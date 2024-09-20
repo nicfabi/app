@@ -9,31 +9,47 @@ class ProductoService extends GetxController {
   List<Map<String, dynamic>> get productos => _productos;
 
   Future<void> obtenerProductos() async {
-  try {
-    const url = 'http://microtech.icu:6969/allProducts';
-    final response = await http.get(Uri.parse(url));
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
-    if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-      _productos.clear();
-      data.forEach((producto) {
-        producto['IMAGE'] =
-            'http://microtech.icu:6969/product/${producto['IMAGE']}';
-        _productos.add(Map<String, dynamic>.from(producto));
-      });
-      Get.snackbar('Productos cargados',
-          'Todos los productos se han cargado correctamente.');
-    } else {
-      Get.snackbar('Error', 'No se pudieron cargar los productos.');
+    try {
+      const url = 'http://microtech.icu:6969/allProducts';
+      final response = await http.get(Uri.parse(url));
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        _productos.clear();
+        data.forEach((producto) {
+          producto['IMAGE'] =
+              'http://microtech.icu:6969/product/${producto['IMAGE']}';
+          _productos.add(Map<String, dynamic>.from(producto));
+        });
+      } else {
+        Get.snackbar('Error', 'No se pudieron cargar los productos.');
+      }
+    } catch (e) {
+      print(e);
+      Get.snackbar(
+          'Error', 'Ocurrió un error al intentar cargar los productos.');
     }
-  } catch (e) {
-    print(e);
-    Get.snackbar(
-        'Error', 'Ocurrió un error al intentar cargar los productos.');
   }
-}
 
+  Future<void> DeleteProduct(
+      BuildContext context, String codigoProducto) async {
+    try {
+      final url = 'http://microtech.icu:6969/product/${codigoProducto}';
+      final response = await http.delete(Uri.parse(url));
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      if (response.statusCode == 200) {
+        Get.snackbar('Producto Eliminado', 'Producto eliminado correctamente.');
+      } else {
+        Get.snackbar('Error', 'No se pudieron cargar los productos.');
+      }
+    } catch (e) {
+      print(e);
+      Get.snackbar(
+          'Error', 'Ocurrió un error al intentar eliminar el producto.');
+    }
+  }
 }
 
 class VerProductosPage extends StatelessWidget {
