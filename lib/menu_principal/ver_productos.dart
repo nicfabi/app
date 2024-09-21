@@ -33,7 +33,7 @@ class ProductoService extends GetxController {
   }
 
   Future<void> DeleteProduct(
-      BuildContext context, String codigoProducto) async {
+      BuildContext context, int codigoProducto) async {
     try {
       final url = 'http://microtech.icu:6969/product/$codigoProducto';
       final response = await http.delete(Uri.parse(url));
