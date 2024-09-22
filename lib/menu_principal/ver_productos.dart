@@ -32,16 +32,16 @@ class ProductoService extends GetxController {
     }
   }
 
-  Future<void> DeleteProduct(
-      BuildContext context, int codigoProducto) async {
+  Future<void> DeleteProduct(BuildContext context, int codigoProducto) async {
     try {
       final url = 'http://microtech.icu:6969/product/$codigoProducto';
       final response = await http.delete(Uri.parse(url));
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
       if (response.statusCode == 200 || response.statusCode == 204) {
+        // Eliminar el producto de la lista localmente
+        _productos.removeWhere((producto) => producto['ID'] == codigoProducto);
         Get.snackbar('Producto Eliminado', 'Producto eliminado correctamente.');
-        await obtenerProductos();
       } else {
         Get.snackbar('Error', 'No se pudo eliminar el producto.');
       }
@@ -54,12 +54,10 @@ class ProductoService extends GetxController {
 }
 
 class VerProductosPage extends StatelessWidget {
-  final ProductoService carritoService =
-      Get.put(ProductoService()); // Instancia del controlador
+  final ProductoService carritoService = Get.put(ProductoService());
 
   @override
   Widget build(BuildContext context) {
-    // Llamar el método de obtener productos al inicializar el widget
     carritoService.obtenerProductos();
 
     return Scaffold(
@@ -67,12 +65,10 @@ class VerProductosPage extends StatelessWidget {
         title: Text('Productos'),
       ),
       body: Obx(() {
-        // Si no hay productos, mostrar un indicador de carga o mensaje
         if (carritoService.productos.isEmpty) {
           return Center(child: CircularProgressIndicator());
         }
 
-        // Mostrar los productos en un ListView
         return ListView.builder(
           itemCount: carritoService.productos.length,
           itemBuilder: (context, index) {
