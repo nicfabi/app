@@ -82,8 +82,9 @@ class VerProductosPage extends StatelessWidget {
                 subtitle: Text('Precio: \$${producto['PRICE'].toString()}'),
                 trailing: IconButton(
                   icon: Icon(Icons.delete),
-                  onPressed: () =>
-                      carritoService.DeleteProduct(context, producto['ID']),
+                  onPressed: () async {
+                    await carritoService.DeleteProduct(context, producto['ID']);
+                  },
                 ),
               ),
             );
