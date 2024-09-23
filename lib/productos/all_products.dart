@@ -47,6 +47,7 @@ class ProductoService extends GetxController {
         // Eliminar el producto de la lista localmente
         productos.removeWhere((producto) => producto['ID'] == codigoProducto);
         Get.snackbar('Producto Eliminado', 'Producto eliminado correctamente.');
+        Navigator.pop(context);
       } else {
         Get.snackbar('Error', 'No se pudo eliminar el producto.');
       }
