@@ -68,6 +68,7 @@ class DetalleProductoPage extends StatelessWidget {
                     onPressed: () async {
                       await productoService.DeleteProduct(
                           context, producto['ID']);
+                      
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
