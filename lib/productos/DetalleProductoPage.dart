@@ -4,13 +4,11 @@ import 'package:get/get.dart'; // Asegúrate de importar el servicio
 
 class DetalleProductoPage extends StatelessWidget {
   final Map<String, dynamic> producto;
-  final RxInt selectedIndexValue; // Recibir el selectedIndexValue
 
   final ProductoService productoService = Get.find<ProductoService>();
 
   DetalleProductoPage({
     required this.producto,
-    required this.selectedIndexValue, // Incluir selectedIndexValue en el constructor
   });
 
   @override
@@ -68,20 +66,8 @@ class DetalleProductoPage extends StatelessWidget {
                   SizedBox(width: 16),
                   ElevatedButton(
                     onPressed: () async {
-                      // Eliminar el producto
                       await productoService.DeleteProduct(
                           context, producto['ID']);
-
-                      // Refrescar los productos
-                      await productoService.obtenerProductos();
-
-                      // Mostrar snackbar confirmando la eliminación
-                      Get.snackbar('Producto Eliminado',
-                          'El producto ha sido eliminado correctamente.');
-
-                      // Forzar navegación a la página de productos si Get.back() no funciona
-                      Get.offAllNamed(
-                          VerProductosPage() as String); // Navega a la página de productos, limpiando la pila de navegación
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,

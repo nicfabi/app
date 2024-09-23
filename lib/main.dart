@@ -30,79 +30,71 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MainScreen extends StatelessWidget {
-  final RxInt _selectedIndex = 0.obs;
+class MainScreen extends StatefulWidget {
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  int _selectedIndex = 0;
   final ProductoService productoService = Get.put(ProductoService());
+
+  final List<Widget> _views = [
+    MenuOpcionesHome(), // 0
+    HomePage(), // 1
+    CarritoPage(), // 2
+    PagoPage(), // 3
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Obx(() {
-        if (productoService.productoSeleccionado.value != null) {
-          return DetalleProductoPage(
-              producto: productoService.productoSeleccionado.value!, selectedIndexValue: _selectedIndex,);
-        } else {
-          return IndexedStack(
-            index: _selectedIndex.value,
-            children: [
-              MenuOpcionesHome(
-                  selectedIndex: _selectedIndex,
-                  selectedIndexValue: _selectedIndex), // 0
-              HomePage(), // 1
-              CarritoPage(), // 2
-              PagoPage(), // 3
-              VerProductosPage(), // 4
-            ],
-          );
-        }
-      }),
-      bottomNavigationBar: Obx(() => CustomBottomNavBar(
-            selectedIndex: _selectedIndex.value,
-            onItemTapped: (index) {
-              productoService.productoSeleccionado.value =
-                  null; // Resetear producto seleccionado
-              _selectedIndex.value = index;
-            },
-          )),
-    );
-  }
-}
-
-class CustomBottomNavBar extends StatelessWidget {
-  final int selectedIndex;
-  final Function(int) onItemTapped;
-
-  const CustomBottomNavBar(
-      {super.key, required this.selectedIndex, required this.onItemTapped});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFF09184D),
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: _views.map((view) {
+            return Navigator(
+              onGenerateRoute: (routeSettings) {
+                return MaterialPageRoute(
+                  builder: (context) => view,
+                );
+              },
+            );
+          }).toList(),
         ),
-      ),
-      child: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
-          BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: 'Escanear'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart), label: 'Carrito'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.attach_money), label: 'Pago'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
-        ],
-        currentIndex: selectedIndex,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.grey,
-        onTap: onItemTapped,
-        backgroundColor: Colors.transparent,
-        type: BottomNavigationBarType.fixed,
-        elevation: 0,
-      ),
-    );
+        bottomNavigationBar: Container(
+          decoration: const BoxDecoration(
+            color: Color(0xFF09184D),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          child: BottomNavigationBar(
+            currentIndex: _selectedIndex,
+            onTap: _onItemTapped,
+            items: const [
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.qr_code), label: 'Escanear'),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.shopping_cart), label: 'Carrito'),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.attach_money), label: 'Pago'),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.person), label: 'Perfil'),
+            ],
+            selectedItemColor: Colors.white,
+            unselectedItemColor: Colors.grey,
+            backgroundColor: Colors.transparent,
+            type: BottomNavigationBarType.fixed,
+            elevation: 0,
+          ),
+        ));
   }
 }
