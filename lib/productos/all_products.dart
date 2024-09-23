@@ -10,7 +10,7 @@ class ProductoService extends GetxController {
 
   Future<void> obtenerProductos() async {
     try {
-      const url = 'http://microtech.icu:6969/allProducts';
+      const url = 'http://microtech.icu:6969/products/allProducts';
       final response = await http.get(Uri.parse(url));
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
@@ -38,7 +38,7 @@ class ProductoService extends GetxController {
 
   Future<void> DeleteProduct(BuildContext context, int codigoProducto) async {
     try {
-      final url = 'http://microtech.icu:6969/product/$codigoProducto';
+      final url = 'http://microtech.icu:6969/products/delete/$codigoProducto';
       final response = await http.delete(Uri.parse(url));
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
