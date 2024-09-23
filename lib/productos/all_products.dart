@@ -10,7 +10,7 @@ class ProductoService extends GetxController {
 
   Future<void> obtenerProductos() async {
     try {
-      const url = 'http://microtech.icu:6969/suppliers/allProducts';
+      const url = 'http://microtech.icu:6969/allProducts';
       final response = await http.get(Uri.parse(url));
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
