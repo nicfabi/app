@@ -1,5 +1,6 @@
 import 'package:app/carro_compra/carrito_page.dart';
 import 'package:app/productos/all_products.dart';
+import 'package:app/suppliers/suppliers_all.dart';
 import 'package:flutter/material.dart';
 
 class MenuOpcionesHome extends StatelessWidget {
@@ -13,6 +14,9 @@ class MenuOpcionesHome extends StatelessWidget {
         backgroundColor: const Color(0xFF09184D),
         centerTitle: true,
       ),
+
+
+
       body: Padding(
         padding: const EdgeInsets.all(60.0),
         child: Column(
@@ -81,12 +85,15 @@ class MenuOpcionesHome extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
+
+
+            //PROVEEDORES
             GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CarritoPage(),
+                    builder: (context) => ListaSuppliers(),
                   ),
                 );
               },
