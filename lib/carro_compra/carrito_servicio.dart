@@ -18,7 +18,7 @@ class CarritoService extends GetxController {
     try {
       final pr = ProgressDialog(context,
           type: ProgressDialogType.normal, isDismissible: true);
-      final url = 'http://microtech.icu:6969/product/${codigoProducto}';
+      final url = 'http://microtech.icu:6969/shopcart/${codigoProducto}';
       final response = await http.get(Uri.parse(url));
       final data = jsonDecode(response.body);
       if (response.statusCode == 200) {
