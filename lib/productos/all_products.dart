@@ -86,12 +86,6 @@ class VerProductosPage extends StatelessWidget {
                     Image.network(producto['IMAGE'], width: 50, height: 50),
                 title: Text(producto['NAME']),
                 subtitle: Text('Precio: \$${producto['PRICE'].toString()}'),
-                trailing: IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () async {
-                    await carritoService.DeleteProduct(context, producto['ID']);
-                  },
-                ),
                 onTap: () {
                   // Seleccionar el producto
                   carritoService.seleccionarProducto(producto);
