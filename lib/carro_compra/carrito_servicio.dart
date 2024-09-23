@@ -18,11 +18,11 @@ class CarritoService extends GetxController {
     try {
       final pr = ProgressDialog(context,
           type: ProgressDialogType.normal, isDismissible: true);
-      final url = 'http://microtech.icu:6969/shopcart/${codigoProducto}';
+      final url = ' https://microtech.icu:5000/shopcart/${codigoProducto}';
       final response = await http.get(Uri.parse(url));
       final data = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        data['IMAGE'] = 'microtech.icu/shopcart/${data['IMAGE']}';
+        data['IMAGE'] = ' https://microtech.icu:5000/shopcart/${data['IMAGE']}';
         Map<String, dynamic> nuevoProducto = data;
         _productos.add(nuevoProducto);
         Get.snackbar('Producto Escaneado', data['NAME']);
@@ -42,7 +42,7 @@ class CarritoService extends GetxController {
 
     final body = jsonEncode(productos);
 
-    const url = 'http://microtech.icu:6969/shopcart/compra';
+    const url = ' https://microtech.icu:5000/shopcart/compra';
     final response = await http.post(
       Uri.parse(url),
       headers: headers,
