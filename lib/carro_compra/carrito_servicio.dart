@@ -38,7 +38,7 @@ class CarritoService extends GetxController {
     }
   }
 
-  Future<void> agregarCarrito(BuildContext context, List productos) async {
+  Future<void> agregarCarrito(BuildContext context) async {
   try {
 
 

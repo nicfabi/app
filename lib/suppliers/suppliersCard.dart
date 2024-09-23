@@ -30,7 +30,7 @@ class SuppliersCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-        leading: const Icon(Icons.store, color: Colors.blueAccent, size: 40),
+        leading: const Icon(Icons.store, color: Color(0xFF7E57C2), size: 40),
         title: Text(
           '$name $lastname',
           style: const TextStyle(fontWeight: FontWeight.bold),

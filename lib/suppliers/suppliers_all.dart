@@ -18,7 +18,7 @@ class _ListaSuppliersState extends State<ListaSuppliers> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Todos los Artículos'),
+        title: const Text('Todos los proveedores'),
       ),
       body: FutureBuilder<List<Widget>>(
         future: SupplierService.fetchSuppliers(), // Mostrar todos los artículos
