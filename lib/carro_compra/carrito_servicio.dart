@@ -42,7 +42,7 @@ class CarritoService extends GetxController {
 
     final body = jsonEncode(productos);
 
-    const url = 'http://microtech.icu:6969/product/compra';
+    const url = 'http://microtech.icu:6969/shopcart/compra';
     final response = await http.post(
       Uri.parse(url),
       headers: headers,
