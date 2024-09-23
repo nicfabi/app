@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app/productos/DetalleProductoPage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -42,7 +43,7 @@ class ProductoService extends GetxController {
       final response = await http.delete(Uri.parse(url));
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
-      if (response.statusCode == 200 || response.statusCode == 204) {
+      if (response.statusCode < 300) {
         // Eliminar el producto de la lista localmente
         productos.removeWhere((producto) => producto['ID'] == codigoProducto);
         Get.snackbar('Producto Eliminado', 'Producto eliminado correctamente.');
@@ -87,9 +88,13 @@ class VerProductosPage extends StatelessWidget {
                 title: Text(producto['NAME']),
                 subtitle: Text('Precio: \$${producto['PRICE'].toString()}'),
                 onTap: () {
-                  // Seleccionar el producto
-                  carritoService.seleccionarProducto(producto);
-                },
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetalleProductoPage(producto: producto),
+                  ),
+                );
+              },
               ),
             );
           },
