@@ -1,5 +1,6 @@
-import 'package:app/menu_principal/productos_page.dart';
-import 'package:app/menu_principal/ver_productos.dart'; // Add this line
+import 'package:app/menu_principal/menu_principal.dart';
+import 'package:app/productos/DetalleProductoPage.dart';
+import 'package:app/productos/all_products.dart'; // Add this line
 import 'package:flutter/material.dart';
 import 'escaneo_producto/home_page.dart';
 import 'escaneo_producto/home_page_controller.dart';
@@ -31,23 +32,37 @@ class MyApp extends StatelessWidget {
 
 class MainScreen extends StatelessWidget {
   final RxInt _selectedIndex = 0.obs;
+  final ProductoService productoService = Get.put(ProductoService());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Obx(() => IndexedStack(
+      body: Obx(() {
+        if (productoService.productoSeleccionado.value != null) {
+          return DetalleProductoPage(
+              producto: productoService.productoSeleccionado.value!, selectedIndexValue: _selectedIndex,);
+        } else {
+          return IndexedStack(
             index: _selectedIndex.value,
             children: [
-              MenuOpcionesHome(selectedIndex: _selectedIndex, selectedIndexValue: _selectedIndex),   // 0
-              HomePage(),           // 1
-              CarritoPage(),        // 2
-              PagoPage(),           // 3
-              VerProductosPage(),      // 4
+              MenuOpcionesHome(
+                  selectedIndex: _selectedIndex,
+                  selectedIndexValue: _selectedIndex), // 0
+              HomePage(), // 1
+              CarritoPage(), // 2
+              PagoPage(), // 3
+              VerProductosPage(), // 4
             ],
-          )),
+          );
+        }
+      }),
       bottomNavigationBar: Obx(() => CustomBottomNavBar(
             selectedIndex: _selectedIndex.value,
-            onItemTapped: (index) => _selectedIndex.value = index,
+            onItemTapped: (index) {
+              productoService.productoSeleccionado.value =
+                  null; // Resetear producto seleccionado
+              _selectedIndex.value = index;
+            },
           )),
     );
   }

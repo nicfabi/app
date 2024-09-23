@@ -4,7 +4,10 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
 class MenuOpcionesHome extends StatelessWidget {
   final RxInt selectedIndexValue;
-  const MenuOpcionesHome({super.key, required RxInt selectedIndex, required this.selectedIndexValue});
+  const MenuOpcionesHome(
+      {super.key,
+      required RxInt selectedIndex,
+      required this.selectedIndexValue});
 
   @override
   Widget build(BuildContext context) {
@@ -100,11 +103,10 @@ class MenuOpcionesHome extends StatelessWidget {
                     padding: EdgeInsets.all(16.0),
                     child: Row(
                       children: <Widget>[
-                        Icon(Icons.edit, size: 25, color: Color(0xFF09184D)),
                         Icon(Icons.person, size: 25, color: Color(0xFF09184D)),
                         SizedBox(width: 16),
                         Text(
-                          'Editar Proveedores',
+                          'Proveedores',
                           style: TextStyle(fontSize: 18),
                         ),
                       ],

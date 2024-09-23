@@ -1,12 +1,12 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class ProductoService extends GetxController {
-  final RxList<Map<String, dynamic>> _productos = <Map<String, dynamic>>[].obs;
-
-  List<Map<String, dynamic>> get productos => _productos;
+  var productos = <Map<String, dynamic>>[].obs;
+  var productoSeleccionado = Rxn<Map<String, dynamic>>();
 
   Future<void> obtenerProductos() async {
     try {
@@ -16,11 +16,11 @@ class ProductoService extends GetxController {
       print('Response body: ${response.body}');
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
-        _productos.clear();
+        productos.clear();
         data.forEach((producto) {
           producto['IMAGE'] =
               'http://microtech.icu:6969/product/${producto['IMAGE']}';
-          _productos.add(Map<String, dynamic>.from(producto));
+          productos.add(Map<String, dynamic>.from(producto));
         });
       } else {
         Get.snackbar('Error', 'No se pudieron cargar los productos.');
@@ -32,6 +32,10 @@ class ProductoService extends GetxController {
     }
   }
 
+  void seleccionarProducto(Map<String, dynamic> producto) {
+    productoSeleccionado.value = producto;
+  }
+
   Future<void> DeleteProduct(BuildContext context, int codigoProducto) async {
     try {
       final url = 'http://microtech.icu:6969/product/$codigoProducto';
@@ -40,7 +44,7 @@ class ProductoService extends GetxController {
       print('Response body: ${response.body}');
       if (response.statusCode == 200 || response.statusCode == 204) {
         // Eliminar el producto de la lista localmente
-        _productos.removeWhere((producto) => producto['ID'] == codigoProducto);
+        productos.removeWhere((producto) => producto['ID'] == codigoProducto);
         Get.snackbar('Producto Eliminado', 'Producto eliminado correctamente.');
       } else {
         Get.snackbar('Error', 'No se pudo eliminar el producto.');
@@ -56,10 +60,12 @@ class ProductoService extends GetxController {
 class VerProductosPage extends StatelessWidget {
   final ProductoService carritoService = Get.put(ProductoService());
 
+  VerProductosPage() {
+    carritoService.obtenerProductos();
+  }
+
   @override
   Widget build(BuildContext context) {
-    carritoService.obtenerProductos();
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Productos'),
@@ -86,6 +92,10 @@ class VerProductosPage extends StatelessWidget {
                     await carritoService.DeleteProduct(context, producto['ID']);
                   },
                 ),
+                onTap: () {
+                  // Seleccionar el producto
+                  carritoService.seleccionarProducto(producto);
+                },
               ),
             );
           },
