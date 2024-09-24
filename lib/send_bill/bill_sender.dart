@@ -14,7 +14,7 @@ class BillSender extends GetView<CarritoService> {
       appBar: AppBar(
         title: const Text('Pago', style: TextStyle(color: Color(0xFFFAFAFA))),
         centerTitle: true,
-        backgroundColor: const Color(0xFF7E57C2),
+        backgroundColor: const Color(0xFF09184D),
       ),
       body: Center(
         child: Column(
