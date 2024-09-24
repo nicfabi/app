@@ -9,7 +9,7 @@ class HomePage extends GetView<HomePageController> {
       appBar: AppBar(
         title: Text('Escanear Producto',
             style: TextStyle(color: Color(0xFFFAFAFA))),
-        backgroundColor: Color(0xFF7E57C2),
+        backgroundColor: Color(0xFF09184D),
         centerTitle: true,
       ),
       body: Center(
