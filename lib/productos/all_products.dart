@@ -11,7 +11,7 @@ class ProductoService extends GetxController {
 
   Future<void> obtenerProductos() async {
     try {
-      const url = 'http://microtech.icu:2007/products/allProducts';
+      const url = 'https://microtech.icu:5000/products/allProducts';
       final response = await http.get(Uri.parse(url));
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
@@ -20,7 +20,7 @@ class ProductoService extends GetxController {
         productos.clear();
         data.forEach((producto) {
           producto['IMAGE'] =
-              'http://microtech.icu:2007/product/${producto['IMAGE']}';
+              'https://microtech.icu:5000/product/${producto['IMAGE']}';
           productos.add(Map<String, dynamic>.from(producto));
         });
       } else {
@@ -39,7 +39,7 @@ class ProductoService extends GetxController {
 
   Future<void> DeleteProduct(BuildContext context, int codigoProducto) async {
     try {
-      final url = 'http://microtech.icu:2007/products/delete/$codigoProducto';
+      final url = 'https://microtech.icu:5000/products/delete/$codigoProducto';
       final response = await http.delete(Uri.parse(url));
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
