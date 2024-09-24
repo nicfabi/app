@@ -26,7 +26,6 @@ class PagoPage extends GetView<CarritoService> {
                 return ElevatedButton(
                   child: const Text('Realizar Pago'),
                   onPressed: () {
-                    controller.agregarCarrito(context);
                     Get.snackbar('Pago', 'Pago realizado con éxito');
                     Get.snackbar(
                         'Factura Enviada', "Factura enviada con éxito!");
