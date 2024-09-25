@@ -25,7 +25,7 @@ class CarritoService extends GetxController {
       final data = jsonDecode(response.body);
       if (response.statusCode == 200) {
         //data['IMAGE'] = 'microtech.icu/shopcart/${data['IMAGE']}';
-        data['IMAGE'] = 'https://i.pinimg.com/564x/dc/97/f1/dc97f1accc15df51ad0ffd07868e10c8.jpg';
+        data['IMAGE'] = 'https://i.pinimg.com/564x/5f/4b/ad/5f4bad284f80e3e69924e826c574418a.jpg';
         Map<String, dynamic> nuevoProducto = data;
         _productos.add(nuevoProducto);
         Get.snackbar('Producto Escaneado', data['NAME']);
