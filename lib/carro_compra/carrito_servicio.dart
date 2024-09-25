@@ -39,6 +39,7 @@ class CarritoService extends GetxController {
   Future<void> agregarCarrito(BuildContext context, List productos) async {
     try {
 
+
       //ESTO ES LO NUEVO, CAMBIEN LOS HTTP X ESTO
       HttpClient client = HttpClient()
         ..badCertificateCallback =

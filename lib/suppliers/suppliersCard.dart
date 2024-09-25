@@ -1,6 +1,8 @@
+import 'package:app/suppliers/suppliers_all.dart';
 import 'package:flutter/material.dart';
+import 'package:app/suppliers/suppliersService.dart';
 
-class SuppliersCard extends StatelessWidget {
+class SuppliersCard extends StatefulWidget {
   final String id;
   final String name;
   final String lastname;
@@ -8,6 +10,8 @@ class SuppliersCard extends StatelessWidget {
   final String email;
   final String city;
   final String brand;
+  
+  final VoidCallback onDelete; // Callback to trigger parent widget's refresh
 
   const SuppliersCard({
     super.key,
@@ -18,7 +22,20 @@ class SuppliersCard extends StatelessWidget {
     required this.email,
     required this.city,
     required this.brand,
+    required this.onDelete, // Pass a callback function to handle deletion
   });
+
+  @override
+  _SuppliersCardState createState() => _SuppliersCardState();
+}
+
+class _SuppliersCardState extends State<SuppliersCard> {
+  bool _isDeleting = false; 
+  
+  void initState() {
+    super.initState();
+    
+  }// To show a loading state when deleting
 
   @override
   Widget build(BuildContext context) {
@@ -30,26 +47,75 @@ class SuppliersCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-        leading: const Icon(Icons.store, color: Colors.blueAccent, size: 40),
+        leading: const Icon(Icons.store, color: Color(0xFF7E57C2), size: 40),
         title: Text(
-          '$name $lastname',
+          '${widget.name} ${widget.lastname}',
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Phone: $phone'),
-            Text('Email: $email'),
-            Text('City: $city'),
-            Text('Brand: $brand'),
+            Text('Phone: ${widget.phone}'),
+            Text('Email: ${widget.email}'),
+            Text('City: ${widget.city}'),
+            Text('Brand: ${widget.brand}'),
           ],
         ),
-        trailing: const Icon(Icons.keyboard_arrow_right, color: Colors.grey, size: 30),
+        trailing: _isDeleting
+            ? const CircularProgressIndicator() // Show loader while deleting
+            : IconButton(
+                icon: const Icon(Icons.delete, color: Color.fromARGB(255, 158, 30, 21)),
+                onPressed: () {
+                  _showDeleteConfirmationDialog(context);
+                },
+              ),
         onTap: () {
-          // Acción al presionar la tarjeta
-          print('Supplier selected: $name');
+          print('Supplier selected: ${widget.name}');
         },
       ),
     );
   }
+
+  // Function to show a confirmation dialog before deleting
+  void _showDeleteConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmar eliminación'),
+          content: const Text('¿Está seguro de que desea eliminar este proveedor?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Eliminar'),
+              onPressed: () {
+                //_deleteSupplier();
+                setState(() {
+                  SupplierService.deleteSupplier(context, widget.id).then((_){
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Proveedor eliminado correctamente'),
+                      duration: const Duration(seconds: 2),
+                    ));
+                    
+
+                  });
+                  
+                  
+              });
+                Navigator.of(context).pop(); // Close the dialog
+                 // Trigger the delete action
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
 }
