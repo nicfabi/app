@@ -16,8 +16,6 @@ class CarritoService extends GetxController {
   // Método para agregar producto desde la API
   Future<void> agregarProductoAPI(
       BuildContext context, String codigoProducto) async {
-
-
     try {
       final pr = ProgressDialog(context,
           type: ProgressDialogType.normal, isDismissible: true);
@@ -38,54 +36,38 @@ class CarritoService extends GetxController {
     }
   }
 
-  Future<void> agregarCarrito(BuildContext context) async {
-  try {
+  Future<void> agregarCarrito(BuildContext context, List productos) async {
+    try {
 
 
-    //ESTO ES LO NUEVO, CAMBIEN LOS HTTP X ESTO
-    
-    HttpClient client = HttpClient()
-      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-
-    final uri = Uri.parse('https://microtech.icu:5000/shopcart/compra');
-    HttpClientRequest request = await client.postUrl(uri);
-
-   
-    request.headers.set('Content-Type', 'application/json');
-
-    
-    final body = jsonEncode(productos);
-    request.add(utf8.encode(body));
-
-    
-    HttpClientResponse response = await request.close();
-
-    
-    if (response.statusCode == 200) {
-     
-      String responseBody = await response.transform(utf8.decoder).join();
-      final data = jsonDecode(responseBody);
-
-      
-      final carritoId = data['id_carro'][0]["ID"];
-
-      
-      enviarFactura(context, carritoId);
-    } else {
-      print('Error al realizar la solicitud: ${response.statusCode}');
+      //ESTO ES LO NUEVO, CAMBIEN LOS HTTP X ESTO
+      HttpClient client = HttpClient()
+        ..badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+      final uri = Uri.parse('https://microtech.icu:5000/shopcart/compra');
+      HttpClientRequest request = await client.postUrl(uri);
+      request.headers.set('Content-Type', 'application/json');
+      final body = jsonEncode(productos);
+      request.add(utf8.encode(body));
+      HttpClientResponse response = await request.close();
+      if (response.statusCode == 200) {
+        String responseBody = await response.transform(utf8.decoder).join();
+        final data = jsonDecode(responseBody);
+        final carritoId = data['id_carro'][0]["ID"];
+        enviarFactura(context, carritoId);
+      } else {
+        print('Error al realizar la solicitud: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error en la solicitud: $e');
     }
-  } catch (e) {
-    print('Error en la solicitud: $e');
   }
-}
-
+  
   Future<void> enviarFactura(BuildContext context, int soldCartId) async {
     final headers = {
       'Content-Type': 'application/json',
     };
-
     final body = jsonEncode({'soldCartId': soldCartId});
-
     const url = 'http://microtech.icu:8888/bill/send';
     final response = await http.post(
       Uri.parse(url),

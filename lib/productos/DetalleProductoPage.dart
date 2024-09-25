@@ -15,7 +15,9 @@ class DetalleProductoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(producto['NAME']),
+        title: Text(producto['NAME'], style: TextStyle(color: Color(0xFFFAFAFA))),
+        centerTitle: true,
+        backgroundColor: Color(0xFF09184D)
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

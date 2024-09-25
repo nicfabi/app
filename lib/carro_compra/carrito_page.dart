@@ -12,7 +12,7 @@ class CarritoPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Carrito de Compras', style: TextStyle(color: Color(0xFFFAFAFA))),
         centerTitle: true,
-        backgroundColor: Color(0xFF7E57C2),
+        backgroundColor: Color(0xFF09184D),
       ),
       body: Obx(() => ListView.builder(
             itemCount: carritoService.productos.length,

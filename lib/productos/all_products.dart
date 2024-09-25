@@ -1,26 +1,31 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:app/productos/DetalleProductoPage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 
 class ProductoService extends GetxController {
   var productos = <Map<String, dynamic>>[].obs;
   var productoSeleccionado = Rxn<Map<String, dynamic>>();
 
+  static const String url = 'https://microtech.icu:5000/products/allProducts';
   Future<void> obtenerProductos() async {
     try {
-      const url = 'http://microtech.icu:2007/products/allProducts';
-      final response = await http.get(Uri.parse(url));
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      print("Sending request to: $url");
+      HttpClient client = HttpClient()
+        ..badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+      HttpClientRequest request = await client.getUrl(Uri.parse(url));
+      request.headers.set('Content-Type', 'application/json; charset=UTF-8');
+      HttpClientResponse response = await request.close();
       if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
+        final responseBody = await response.transform(utf8.decoder).join();
+        final List<dynamic> data = jsonDecode(responseBody);
         productos.clear();
         data.forEach((producto) {
           producto['IMAGE'] =
-              'http://microtech.icu:2007/product/${producto['IMAGE']}';
+              'https://microtech.icu:5000/product/${producto['IMAGE']}';
           productos.add(Map<String, dynamic>.from(producto));
         });
       } else {
@@ -38,11 +43,17 @@ class ProductoService extends GetxController {
   }
 
   Future<void> DeleteProduct(BuildContext context, int codigoProducto) async {
+    final String url =
+        'https://microtech.icu:5000/products/delete/$codigoProducto';
     try {
-      final url = 'http://microtech.icu:2007/products/delete/$codigoProducto';
-      final response = await http.delete(Uri.parse(url));
+      print("Sending DELETE request to: $url");
+      HttpClient client = HttpClient()
+        ..badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+      HttpClientRequest request = await client.deleteUrl(Uri.parse(url));
+      request.headers.set('Content-Type', 'application/json; charset=UTF-8');
+      HttpClientResponse response = await request.close();
       print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
       if (response.statusCode < 300) {
         // Eliminar el producto de la lista localmente
         productos.removeWhere((producto) => producto['ID'] == codigoProducto);
@@ -70,8 +81,9 @@ class VerProductosPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Productos'),
-      ),
+          title: Text('Productos', style: TextStyle(color: Color(0xFFFAFAFA))),
+          centerTitle: true,
+          backgroundColor: Color(0xFF09184D)),
       body: Obx(() {
         if (carritoService.productos.isEmpty) {
           return Center(child: CircularProgressIndicator());
@@ -89,13 +101,14 @@ class VerProductosPage extends StatelessWidget {
                 title: Text(producto['NAME']),
                 subtitle: Text('Precio: \$${producto['PRICE'].toString()}'),
                 onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DetalleProductoPage(producto: producto),
-                  ),
-                );
-              },
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          DetalleProductoPage(producto: producto),
+                    ),
+                  );
+                },
               ),
             );
           },
