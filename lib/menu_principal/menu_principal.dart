@@ -1,4 +1,5 @@
 import 'package:app/categories/categories_list.dart';
+import 'package:app/productos/add_products.dart';
 import 'package:app/productos/all_products.dart';
 import 'package:app/suppliers/suppliers_all.dart';
 import 'package:flutter/material.dart';
@@ -53,8 +54,17 @@ class MenuOpcionesHome extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
+
+            //AGREGAR PRODUCTOS
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddProducts(),
+                  ),
+                );
+              },
               child: SizedBox(
                 width: 300,
                 height: 80,

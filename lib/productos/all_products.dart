@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:app/productos/DetalleProductoPage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -24,8 +23,7 @@ class ProductoService extends GetxController {
         final List<dynamic> data = jsonDecode(responseBody);
         productos.clear();
         data.forEach((producto) {
-          producto['IMAGE'] =
-              'https://microtech.icu:5000/${producto['IMAGE']}';
+          producto['IMAGE'] = 'https://microtech.icu:5000/${producto['IMAGE']}';
           productos.add(Map<String, dynamic>.from(producto));
         });
       } else {
@@ -66,6 +64,39 @@ class ProductoService extends GetxController {
       print('Error occurred: $e');
       Get.snackbar(
           'Error', 'Ocurrió un error al intentar eliminar el producto.');
+    }
+  }
+
+  Future<void> addProduct(Map<String, dynamic> productData) async {
+    const String url = 'https://microtech.icu:5000/products/addProduct';
+    try {
+      print(productData);
+      print("Sending request to add product at: $url");
+      HttpClient client = HttpClient()
+        ..badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+
+      // Build the request for the add product endpoint
+      HttpClientRequest request = await client.postUrl(Uri.parse(url));
+      request.headers.set('Content-Type', 'application/json; charset=UTF-8');
+
+      // Convert productData to JSON and send the request
+      request.add(utf8.encode(jsonEncode(productData)));
+
+      // Await the response
+      HttpClientResponse response = await request.close();
+
+      if (response.statusCode == 200) {
+        String responseBody = await response.transform(utf8.decoder).join();
+        print("Product added successfully: $responseBody");
+
+        // Recarga los productos una vez que se agrega un producto nuevo
+        obtenerProductos();
+      } else {
+        print("Failed to add product, status code: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("ERROR WHILE SENDING/RECEIVING REQUEST: $e");
     }
   }
 }
