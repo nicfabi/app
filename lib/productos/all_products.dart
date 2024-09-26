@@ -25,7 +25,7 @@ class ProductoService extends GetxController {
         productos.clear();
         data.forEach((producto) {
           producto['IMAGE'] =
-              'https://microtech.icu:5000/product/${producto['IMAGE']}';
+              'https://microtech.icu:5000/${producto['IMAGE']}';
           productos.add(Map<String, dynamic>.from(producto));
         });
       } else {
