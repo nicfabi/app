@@ -8,7 +8,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class CarritoService extends GetxController {
   final RxList<Map<String, dynamic>> _productos = <Map<String, dynamic>>[].obs;
-  static const String compraUrl = 'http://microtech.icu:6969/shopcart/compra';
+  static String dUrl = dotenv.env['URL']!;
+  static String compraUrl = '$dUrl/shopcart/compra';
 
   List<Map<String, dynamic>> get productos => _productos;
 
@@ -44,22 +45,22 @@ class CarritoService extends GetxController {
     final headers = {
       'Content-Type': 'application/json',
     };
-    print("got hereeee");
     final body = jsonEncode(productos);
+    print(body);
 
-    final response = await http.post(
-      Uri.parse(compraUrl),
-      headers: headers,
-      body: body,
-    );
-    final rta = await jsonDecode(response.body);
-    print(rta);
-    final approved = await rta["status"];
-    print(approved);
-    if (await approved == "approved") {
-      final data = jsonDecode(response.body);
-      final carritoId = data['id_carro'][0]["ID"];
-      enviarFactura(context, carritoId);
+    HttpClient client = HttpClient()
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+    HttpClientRequest request = await client.postUrl(Uri.parse(compraUrl));
+    request.headers.set('Content-Type', 'application/json; charset=UTF-8');
+    request.add(utf8.encode(body));
+    HttpClientResponse response = await request.close();
+
+    if (response.statusCode == 200) {
+      String jsonString = await response.transform(utf8.decoder).join();
+      final carrito = jsonDecode(jsonString);
+      enviarFactura(context, carrito['id_carro'][0]["ID"]);
+      print("Compra realizada correctamente: ${carrito}");
     } else {
       Get.snackbar('Error', 'No se pudo realizar la compra');
     }
@@ -82,6 +83,8 @@ class CarritoService extends GetxController {
     if (response.statusCode == 200) {
       String jsonString = await response.transform(utf8.decoder).join();
       print("Factura enviada correctamente: ${jsonDecode(jsonString)}");
+    } else {
+      Get.snackbar('Error', 'No se pudo enviar la factura');
     }
   }
 
