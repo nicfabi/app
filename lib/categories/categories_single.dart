@@ -5,11 +5,13 @@ class CategoriesSingle extends StatefulWidget {
   final String id;
   String name;
   String description;
+  final Function callback;
 
   CategoriesSingle({
     required this.id,
     required this.name,
     required this.description,
+    required this.callback,
     super.key,
   });
 
@@ -172,6 +174,11 @@ class _CategoriesSingleState extends State<CategoriesSingle> {
       'description': description,
     }, id)
         .then((_) {
+      setState(() {
+        widget.callback();
+        widget.name = name;
+        widget.description = description;
+      });
       // After updating a supplier, you can show a confirmation
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Categoría actualizada exitosamente')),

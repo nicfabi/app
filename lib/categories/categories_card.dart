@@ -59,6 +59,11 @@ class _CategoriesCardState extends State<CategoriesCard> {
                             id: widget.id,
                             name: widget.name,
                             description: widget.description,
+                            callback: () {
+                              setState(() {
+                                widget.onDelete();
+                              });
+                            },
                           )),
                 );
               },
@@ -81,10 +86,14 @@ class _CategoriesCardState extends State<CategoriesCard> {
             context,
             MaterialPageRoute(
                 builder: (context) => CategoriesSingle(
-                      id: widget.id,
-                      name: widget.name,
-                      description: widget.description,
-                    )),
+                    id: widget.id,
+                    name: widget.name,
+                    description: widget.description,
+                    callback: () {
+                      setState(() {
+                        widget.onDelete();
+                      });
+                    })),
           );
         },
       ),
