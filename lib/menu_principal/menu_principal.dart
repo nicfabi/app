@@ -1,9 +1,9 @@
+import 'package:app/categories/categories_list.dart';
 import 'package:app/productos/all_products.dart';
 import 'package:app/suppliers/suppliers_all.dart';
 import 'package:flutter/material.dart';
 
 class MenuOpcionesHome extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,9 +13,6 @@ class MenuOpcionesHome extends StatelessWidget {
         backgroundColor: const Color(0xFF09184D),
         centerTitle: true,
       ),
-
-
-
       body: Padding(
         padding: const EdgeInsets.all(60.0),
         child: Column(
@@ -57,8 +54,7 @@ class MenuOpcionesHome extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             GestureDetector(
-              onTap: () {
-              },
+              onTap: () {},
               child: SizedBox(
                 width: 300,
                 height: 80,
@@ -84,7 +80,6 @@ class MenuOpcionesHome extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-
 
             //PROVEEDORES
             GestureDetector(
@@ -112,6 +107,43 @@ class MenuOpcionesHome extends StatelessWidget {
                         SizedBox(width: 16),
                         Text(
                           'Proveedores',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            //CATEGORIES
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CategoriesList(),
+                  ),
+                );
+              },
+              child: SizedBox(
+                width: 300,
+                height: 80,
+                child: Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Row(
+                      children: <Widget>[
+                        Icon(Icons.category,
+                            size: 25, color: Color(0xFF09184D)),
+                        SizedBox(width: 16),
+                        Text(
+                          'Categorías',
                           style: TextStyle(fontSize: 18),
                         ),
                       ],

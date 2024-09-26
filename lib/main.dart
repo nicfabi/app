@@ -7,9 +7,17 @@ import 'carro_compra/carrito_page.dart';
 import 'pago_page.dart';
 import 'carro_compra/carrito_servicio.dart';
 import 'package:get/get.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  try {
+    await dotenv.load(fileName: "assets/.env"); // Load .env file
+  } catch (e) {
+    print('.env file not found');
+  }
+
   Get.put(CarritoService());
   Get.put(HomePageController());
   runApp(MyApp());

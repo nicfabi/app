@@ -13,6 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_barcode_scanner: ^2.0.0
+  flutter_dotenv: ^5.1.0
   get: ^4.6.6
   http: ^1.2.2
   progress_dialog_null_safe: ^3.0.0
@@ -25,4 +26,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/
     - assets/icon.png
