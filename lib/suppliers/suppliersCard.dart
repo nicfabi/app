@@ -1,6 +1,8 @@
+import 'package:app/suppliers/suppliersSingle.dart';
 import 'package:app/suppliers/suppliers_all.dart';
 import 'package:flutter/material.dart';
 import 'package:app/suppliers/suppliersService.dart';
+import 'package:get/get.dart';
 
 class SuppliersCard extends StatefulWidget {
   final String id;
@@ -59,6 +61,23 @@ class _SuppliersCardState extends State<SuppliersCard> {
             Text('Email: ${widget.email}'),
             Text('City: ${widget.city}'),
             Text('Brand: ${widget.brand}'),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Supplierssingle(id: widget.id,
+                  name: widget.name,
+                  lastname: widget.lastname,  
+                  phone: widget.phone,
+                  email: widget.email,
+                  city: widget.city,
+                  brand: widget.brand
+
+                  ,)),
+                );
+              },
+              child: Text('Ver detalles'),
+            ),
           ],
         ),
         trailing: _isDeleting
@@ -71,6 +90,18 @@ class _SuppliersCardState extends State<SuppliersCard> {
               ),
         onTap: () {
           print('Supplier selected: ${widget.name}');
+           Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Supplierssingle(id: widget.id,
+                  name: widget.name,
+                  lastname: widget.lastname,  
+                  phone: widget.phone,
+                  email: widget.email,
+                  city: widget.city,
+                  brand: widget.brand
+
+                  ,)),
+                );
         },
       ),
     );

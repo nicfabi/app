@@ -108,5 +108,35 @@ class SupplierService {
   }
 
 
+  static Future<void> updateSupplier (Map<String, String> supplierData, String id) async {
+    final url = 'https://microtech.icu:5000/suppliers/update/$id';
+    //final url = 'http://192.168.0.13:3000/suppliers/update/$id';
+    try {
+      print(url);
+      print(supplierData);
+      HttpClient client = HttpClient()
+        ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+
+      HttpClientRequest request = await client.postUrl(Uri.parse(url));
+      request.headers.set('Content-Type', 'application/json');
+
+      request.add(utf8.encode(jsonEncode(supplierData)));
+
+      HttpClientResponse response = await request.close();
+      print(response);
+
+      if (response.statusCode == 200) {
+        print("Supplier updated successfully.");
+        
+      } else {
+        print("Failed to update supplier, status code: ${response.statusCode}");
+        
+      }
+    } catch (e) {
+      print("ERROR WHILE SENDING/RECEIVING REQUEST: $e");
+      
+    }
+  }
+
 
 }
