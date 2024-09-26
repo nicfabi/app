@@ -1,29 +1,29 @@
 // ignore_for_file: avoid_print
-
+import 'package:app/categories/categories_service.dart';
 import 'package:flutter/material.dart';
-import 'package:app/suppliers/suppliersService.dart';
+import 'package:get/get.dart';
 
-class ListaSuppliers extends StatefulWidget {
-  const ListaSuppliers({super.key});
+class CategoriesList extends StatefulWidget {
+  const CategoriesList({super.key});
 
   @override
-  State<ListaSuppliers> createState() => _ListaSuppliersState();
+  State<CategoriesList> createState() => _CategoriesListState();
 }
 
-class _ListaSuppliersState extends State<ListaSuppliers> {
-  Future<List<Widget>>? _futureSuppliers;
+class _CategoriesListState extends State<CategoriesList> {
+  Future<List<Widget>>? _futureCategories;
 
   @override
   void initState() {
     super.initState();
-    loadSuppliers_add();
+    loadCategories_add();
   }
 
-  void loadSuppliers_add() {
+  void loadCategories_add() {
     setState(() {
-      _futureSuppliers = SupplierService.loadSuppliers(
+      _futureCategories = CategoriesService.loadCategories(
         onDelete: () {
-          loadSuppliers_add();
+          loadCategories_add();
         },
       );
     });
@@ -33,10 +33,10 @@ class _ListaSuppliersState extends State<ListaSuppliers> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Todos los proveedores'),
+        title: const Text('Todas las categorías'),
       ),
       body: FutureBuilder<List<Widget>>(
-        future: _futureSuppliers,
+        future: _futureCategories,
         builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
           if (snapshot.hasData && snapshot.data!.isNotEmpty) {
             return ListView(children: snapshot.data!);
@@ -59,17 +59,13 @@ class _ListaSuppliersState extends State<ListaSuppliers> {
   void _showAddSupplierDialog(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
     String name = '';
-    String phone = '';
-    String email = '';
-    String city = '';
-    String brand = '';
-    String lastname = '';
+    String description = '';
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Agregar nuevo proveedor'),
+          title: const Text('Agregar nueva categoría'),
           content: Form(
             key: _formKey,
             child: SingleChildScrollView(
@@ -86,42 +82,14 @@ class _ListaSuppliersState extends State<ListaSuppliers> {
                     },
                   ),
                   TextFormField(
-                    decoration: const InputDecoration(labelText: 'Apellido'),
-                    onSaved: (value) => lastname = value ?? '',
+                    decoration: const InputDecoration(labelText: 'Descripción'),
+                    onSaved: (value) => description = value ?? '',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Por favor ingrese el apellido';
+                        return 'Por favor ingrese la descripción';
                       }
                       return null;
                     },
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Teléfono'),
-                    onSaved: (value) => phone = value ?? '',
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Por favor ingrese el teléfono';
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Correo'),
-                    onSaved: (value) => email = value ?? '',
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Por favor ingrese el correo';
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Ciudad'),
-                    onSaved: (value) => city = value ?? '',
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Marca'),
-                    onSaved: (value) => brand = value ?? '',
                   ),
                 ],
               ),
@@ -139,8 +107,7 @@ class _ListaSuppliersState extends State<ListaSuppliers> {
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
-                  _addSupplier(
-                      context, name, phone, email, city, brand, lastname);
+                  _addSupplier(context, name, description);
                   Navigator.of(context).pop();
                 }
               },
@@ -151,22 +118,14 @@ class _ListaSuppliersState extends State<ListaSuppliers> {
     );
   }
 
-  void _addSupplier(BuildContext context, String name, String phone,
-      String email, String city, String brand, String lastname) {
-    SupplierService.addSupplier({
-      'name': name,
-      'phone': phone,
-      'email': email,
-      'city': city,
-      'brand': brand,
-      'lastname': lastname,
-    }).then((_) {
-      // After adding a supplier, reload the list
-      loadSuppliers_add();
+  void _addSupplier(BuildContext context, String name, String description) {
+    CategoriesService.addCategory({'name': name, 'description': description})
+        .then((_) {
+      loadCategories_add();
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Proveedor agregado exitosamente')),
+      const SnackBar(content: Text('Categoría agregada exitosamente')),
     );
   }
 }

@@ -1,16 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:app/suppliers/suppliersCard.dart';
+import 'package:app/categories/categories_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class SupplierService {
-  static String dUrl = dotenv.env['URL']!;
-  static String fetchUrl = "$dUrl/suppliers/all";
-  static String addUrl = "$dUrl/suppliers/add";
+class CategoriesService {
+  static final String dUrl = dotenv.env['URL'] ?? "https://microtech.icu:5000";
+  static String fetchUrl = "$dUrl/categories/all";
+  static String addUrl = "$dUrl/categories/add";
 
-  // Function to fetch suppliers (already implemented)
-  static Future<List<Widget>> fetchSuppliers(
+  // Function to fetch categories (already implemented)
+  static Future<List<Widget>> fetchCategories(
       {required Function onDelete}) async {
     try {
       print("Sending request to: $fetchUrl");
@@ -25,27 +25,23 @@ class SupplierService {
       if (response.statusCode == 200) {
         String jsonString = await response.transform(utf8.decoder).join();
         dynamic jsonData = jsonDecode(jsonString);
-        List items = jsonData["suppliers"];
-        List<Widget> supplierWidgets = [];
+        List items = jsonData["categories"];
+        List<Widget> categoryWidgets = [];
 
         for (var item in items) {
-          supplierWidgets.add(SuppliersCard(
+          categoryWidgets.add(CategoriesCard(
             id: item["ID"].toString(),
             name: item['NAME'].toString(),
-            phone: item["PHONE"].toString(),
-            email: item["EMAIL"].toString(),
-            city: item["CITY"].toString(),
-            brand: item["BRAND"].toString(),
-            lastname: item["LASTNAME"].toString(),
+            description: item["DESCRIPTION"].toString(),
             onDelete: () {
               onDelete();
             }, // Pass a callback function to handle deletion
           ));
         }
 
-        return supplierWidgets;
+        return categoryWidgets;
       } else {
-        print("Failed to load suppliers, status code: ${response.statusCode}");
+        print("Failed to load categories, status code: ${response.statusCode}");
         return [];
       }
     } catch (e) {
@@ -54,38 +50,38 @@ class SupplierService {
     }
   }
 
-  // Function to add a new supplier
-  static Future<void> addSupplier(Map<String, String> supplierData) async {
+  // Function to add a new category
+  static Future<void> addCategory(Map<String, String> categoryData) async {
     try {
-      print(supplierData);
-      print("Sending request to add supplier at: $addUrl");
+      print(categoryData);
+      print("Sending request to add category at: $addUrl");
       HttpClient client = HttpClient()
         ..badCertificateCallback =
             (X509Certificate cert, String host, int port) => true;
 
-      // Build the request for the add supplier endpoint
+      // Build the request to add the category endpoint
       HttpClientRequest request = await client.postUrl(Uri.parse(addUrl));
       request.headers.set('Content-Type', 'application/json; charset=UTF-8');
 
-      // Convert supplierData to JSON and send the request
-      request.add(utf8.encode(jsonEncode(supplierData)));
+      // Convert categoryData to JSON and send the request
+      request.add(utf8.encode(jsonEncode(categoryData)));
 
       // Await the response
       HttpClientResponse response = await request.close();
 
       if (response.statusCode == 200) {
         String responseBody = await response.transform(utf8.decoder).join();
-        print("Supplier added successfully: $responseBody");
+        print("Category added successfully: $responseBody");
       } else {
-        print("Failed to add supplier, status code: ${response.statusCode}");
+        print("Failed to add category, status code: ${response.statusCode}");
       }
     } catch (e) {
       print("ERROR WHILE SENDING/RECEIVING REQUEST: $e");
     }
   }
 
-  static Future<void> deleteSupplier(BuildContext context, String id) async {
-    final url = '$dUrl/suppliers/delete/$id';
+  static Future<void> deleteCategory(BuildContext context, String id) async {
+    final url = '$dUrl/categories/delete/$id';
     try {
       HttpClient client = HttpClient()
         ..badCertificateCallback =
@@ -98,29 +94,25 @@ class SupplierService {
       print(response);
 
       if (response.statusCode == 200) {
-        print("Supplier deleted successfully.");
+        print("Category deleted successfully.");
       } else {
-        print("Failed to delete supplier, status code: ${response.statusCode}");
+        print("Failed to delete category, status code: ${response.statusCode}");
       }
     } catch (e) {
       print("ERROR WHILE SENDING/RECEIVING REQUEST: $e");
     }
   }
 
-  static Future<List<Widget>> loadSuppliers(
+  static Future<List<Widget>> loadCategories(
       {required Function onDelete}) async {
-    return await fetchSuppliers(
-      onDelete: onDelete,
-    );
+    return await fetchCategories(onDelete: onDelete);
   }
 
-  static Future<void> updateSupplier(
-      Map<String, String> supplierData, String id) async {
-    final url = '$dUrl/suppliers/update/$id';
-    //final url = 'http://192.168.0.13:3000/suppliers/update/$id';
+  static Future<void> updateCategory(
+      Map<String, String> categoryData, String id) async {
+    final url = '$dUrl/categories/update/$id';
+
     try {
-      print(url);
-      print(supplierData);
       HttpClient client = HttpClient()
         ..badCertificateCallback =
             (X509Certificate cert, String host, int port) => true;
@@ -128,15 +120,15 @@ class SupplierService {
       HttpClientRequest request = await client.postUrl(Uri.parse(url));
       request.headers.set('Content-Type', 'application/json');
 
-      request.add(utf8.encode(jsonEncode(supplierData)));
+      request.add(utf8.encode(jsonEncode(categoryData)));
 
       HttpClientResponse response = await request.close();
       print(response);
 
       if (response.statusCode == 200) {
-        print("Supplier updated successfully.");
+        print("Category updated successfully.");
       } else {
-        print("Failed to update supplier, status code: ${response.statusCode}");
+        print("Failed to update category, status code: ${response.statusCode}");
       }
     } catch (e) {
       print("ERROR WHILE SENDING/RECEIVING REQUEST: $e");

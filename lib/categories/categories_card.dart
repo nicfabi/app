@@ -1,37 +1,29 @@
-import 'package:app/suppliers/suppliersSingle.dart';
-import 'package:app/suppliers/suppliers_all.dart';
+import 'package:app/categories/categories_service.dart';
+import 'package:app/categories/categories_single.dart';
 import 'package:flutter/material.dart';
 import 'package:app/suppliers/suppliersService.dart';
 import 'package:get/get.dart';
 
-class SuppliersCard extends StatefulWidget {
+class CategoriesCard extends StatefulWidget {
   final String id;
   final String name;
-  final String lastname;
-  final String phone;
-  final String email;
-  final String city;
-  final String brand;
+  final String description;
 
   final VoidCallback onDelete; // Callback to trigger parent widget's refresh
 
-  const SuppliersCard({
+  const CategoriesCard({
     super.key,
     required this.id,
     required this.name,
-    required this.lastname,
-    required this.phone,
-    required this.email,
-    required this.city,
-    required this.brand,
+    required this.description,
     required this.onDelete, // Pass a callback function to handle deletion
   });
 
   @override
-  _SuppliersCardState createState() => _SuppliersCardState();
+  _CategoriesCardState createState() => _CategoriesCardState();
 }
 
-class _SuppliersCardState extends State<SuppliersCard> {
+class _CategoriesCardState extends State<CategoriesCard> {
   bool _isDeleting = false;
 
   void initState() {
@@ -49,31 +41,24 @@ class _SuppliersCardState extends State<SuppliersCard> {
       child: ListTile(
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-        leading: const Icon(Icons.store, color: Color(0xFF7E57C2), size: 40),
+        leading: const Icon(Icons.category, color: Color(0xFF7E57C2), size: 40),
         title: Text(
-          '${widget.name} ${widget.lastname}',
+          widget.name,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Phone: ${widget.phone}'),
-            Text('Email: ${widget.email}'),
-            Text('City: ${widget.city}'),
-            Text('Brand: ${widget.brand}'),
+            Text(widget.description),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => Supplierssingle(
+                      builder: (context) => CategoriesSingle(
                             id: widget.id,
                             name: widget.name,
-                            lastname: widget.lastname,
-                            phone: widget.phone,
-                            email: widget.email,
-                            city: widget.city,
-                            brand: widget.brand,
+                            description: widget.description,
                             callback: () {
                               setState(() {
                                 widget.onDelete();
@@ -96,24 +81,19 @@ class _SuppliersCardState extends State<SuppliersCard> {
                 },
               ),
         onTap: () {
-          print('Supplier selected: ${widget.name}');
+          print('Category selected: ${widget.name}');
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => Supplierssingle(
-                      id: widget.id,
-                      name: widget.name,
-                      lastname: widget.lastname,
-                      phone: widget.phone,
-                      email: widget.email,
-                      city: widget.city,
-                      brand: widget.brand,
-                      callback: () {
-                        setState(() {
-                          widget.onDelete();
-                        });
-                      },
-                    )),
+                builder: (context) => CategoriesSingle(
+                    id: widget.id,
+                    name: widget.name,
+                    description: widget.description,
+                    callback: () {
+                      setState(() {
+                        widget.onDelete();
+                      });
+                    })),
           );
         },
       ),
@@ -128,7 +108,7 @@ class _SuppliersCardState extends State<SuppliersCard> {
         return AlertDialog(
           title: const Text('Confirmar eliminación'),
           content:
-              const Text('¿Está seguro de que desea eliminar este proveedor?'),
+              const Text('¿Está seguro de que desea eliminar esta categoría?'),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancelar'),
@@ -141,10 +121,11 @@ class _SuppliersCardState extends State<SuppliersCard> {
               onPressed: () {
                 //_deleteSupplier();
                 setState(() {
-                  SupplierService.deleteSupplier(context, widget.id).then((_) {
-                    widget.onDelete();
+                  CategoriesService.deleteCategory(context, widget.id)
+                      .then((_) {
+                    widget.onDelete(); // Trigger the parent widget's refresh
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('Proveedor eliminado correctamente'),
+                      content: Text('Categoría eliminada correctamente'),
                       duration: const Duration(seconds: 2),
                     ));
                   });
