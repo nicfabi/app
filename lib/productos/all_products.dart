@@ -89,8 +89,6 @@ class ProductoService extends GetxController {
       if (response.statusCode == 200) {
         String responseBody = await response.transform(utf8.decoder).join();
         print("Product added successfully: $responseBody");
-
-        // Recarga los productos una vez que se agrega un producto nuevo
         obtenerProductos();
       } else {
         print("Failed to add product, status code: ${response.statusCode}");
@@ -99,7 +97,37 @@ class ProductoService extends GetxController {
       print("ERROR WHILE SENDING/RECEIVING REQUEST: $e");
     }
   }
+
+  updateProduct(String id, Map<String, Object?> map) {}
 }
+
+  Future<void> updateProduct(
+      Map<String, String> supplierData, String codigoProducto) async {
+    final url = 'https://microtech.icu:5000/products/update/$codigoProducto';
+    try {
+      print(url);
+      print(supplierData);
+      HttpClient client = HttpClient()
+        ..badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+
+      HttpClientRequest request = await client.postUrl(Uri.parse(url));
+      request.headers.set('Content-Type', 'application/json');
+
+      request.add(utf8.encode(jsonEncode(supplierData)));
+
+      HttpClientResponse response = await request.close();
+      print(response);
+
+      if (response.statusCode == 200) {
+        print("Supplier updated successfully.");
+      } else {
+        print("Failed to update supplier, status code: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("ERROR WHILE SENDING/RECEIVING REQUEST: $e");
+    }
+  }
 
 class VerProductosPage extends StatelessWidget {
   final ProductoService carritoService = Get.put(ProductoService());
@@ -109,42 +137,57 @@ class VerProductosPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          title: Text('Productos', style: TextStyle(color: Color(0xFFFAFAFA))),
-          centerTitle: true,
-          backgroundColor: Color(0xFF09184D)),
-      body: Obx(() {
-        if (carritoService.productos.isEmpty) {
-          return Center(child: CircularProgressIndicator());
-        }
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: Text('Productos', style: TextStyle(color: Color(0xFFFAFAFA))),
+      centerTitle: true,
+      backgroundColor: Color(0xFF09184D),
+    ),
+    body: Obx(() {
+      if (carritoService.productos.isEmpty) {
+        return Center(child: CircularProgressIndicator());
+      }
 
-        return ListView.builder(
-          itemCount: carritoService.productos.length,
-          itemBuilder: (context, index) {
-            final producto = carritoService.productos[index];
-            return Card(
-              margin: EdgeInsets.all(10),
-              child: ListTile(
-                leading:
-                    Image.network(producto['IMAGE'], width: 50, height: 50),
-                title: Text(producto['NAME']),
-                subtitle: Text('Precio: \$${producto['PRICE'].toString()}'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          DetalleProductoPage(producto: producto),
-                    ),
-                  );
-                },
+      return ListView.builder(
+        itemCount: carritoService.productos.length,
+        itemBuilder: (context, index) {
+          final producto = carritoService.productos[index];
+          return Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+            child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              leading: Image.network(producto['IMAGE'], width: 50, height: 50),
+              title: Text(
+                producto['NAME'],
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-            );
-          },
-        );
-      }),
-    );
-  }
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Precio: \$${producto['PRICE'].toString()}'),
+                  Text('Descripción: ${producto['DESCRIPTION']}'),
+                  // Agrega más detalles del producto si es necesario
+                ],
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetalleProductoPage(producto: producto),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      );
+    }),
+  );
+}
+
 }

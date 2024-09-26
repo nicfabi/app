@@ -41,7 +41,7 @@ class _CategoriesCardState extends State<CategoriesCard> {
       child: ListTile(
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-        leading: const Icon(Icons.category, color: Color(0xFF7E57C2), size: 40),
+        leading: const Icon(Icons.category, color: Color(0xFF09184D), size: 40),
         title: Text(
           widget.name,
           style: const TextStyle(fontWeight: FontWeight.bold),
