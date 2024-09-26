@@ -20,7 +20,7 @@ class CategoriesSingle extends StatefulWidget {
 }
 
 class _CategoriesSingleState extends State<CategoriesSingle> {
-  Color morado = const Color(0xFF7E57C2);
+  Color morado = const Color(0xFF09184D);
 
   @override
   Widget build(BuildContext context) {

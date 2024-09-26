@@ -33,7 +33,10 @@ class _ListaSuppliersState extends State<ListaSuppliers> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Todos los proveedores'),
+        title: const Text('Todas los proovedores',
+            style: TextStyle(color: Color(0xFFFAFAFA))),
+        backgroundColor: const Color(0xFF09184D),
+        centerTitle: true,
       ),
       body: FutureBuilder<List<Widget>>(
         future: _futureSuppliers,

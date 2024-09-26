@@ -26,7 +26,8 @@ class AddProducts extends StatelessWidget {
               return ListTile(
                 title: Text(producto['name']),
                 subtitle: Text('Precio: \$${producto['price']}'),
-                leading: Image.network(producto['image'], width: 50, height: 50),
+                leading:
+                    Image.network(producto['image'], width: 50, height: 50),
                 trailing: IconButton(
                   icon: const Icon(Icons.delete),
                   onPressed: () {
@@ -49,7 +50,14 @@ class AddProducts extends StatelessWidget {
 
   void _showAddProductDialog(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
-    String name = '', price = '', description = '', quantity = '', categoryId = '', supplierId = '', image = '';
+    String 
+        id = '',
+        name = '',
+        price = '',
+        description = '',
+        quantity = '',
+        categoryId = '',
+        supplierId = '';
 
     showDialog(
       context: context,
@@ -62,14 +70,23 @@ class AddProducts extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   TextFormField(
+                    decoration: const InputDecoration(labelText: 'ID'),
+                    onSaved: (value) => name = value ?? '',
+                    validator: (value) => value!.isEmpty
+                        ? 'Por favor ingrese el ID del producto'
+                        : null,
+                  ),
+                  TextFormField(
                     decoration: const InputDecoration(labelText: 'Nombre'),
                     onSaved: (value) => name = value ?? '',
-                    validator: (value) => value!.isEmpty ? 'Por favor ingrese el nombre' : null,
+                    validator: (value) =>
+                        value!.isEmpty ? 'Por favor ingrese el nombre' : null,
                   ),
                   TextFormField(
                     decoration: const InputDecoration(labelText: 'Precio'),
                     onSaved: (value) => price = value ?? '',
-                    validator: (value) => value!.isEmpty ? 'Por favor ingrese el precio' : null,
+                    validator: (value) =>
+                        value!.isEmpty ? 'Por favor ingrese el precio' : null,
                   ),
                   TextFormField(
                     decoration: const InputDecoration(labelText: 'Descripción'),
@@ -80,16 +97,14 @@ class AddProducts extends StatelessWidget {
                     onSaved: (value) => quantity = value ?? '',
                   ),
                   TextFormField(
-                    decoration: const InputDecoration(labelText: 'ID de Categoría'),
+                    decoration:
+                        const InputDecoration(labelText: 'ID de Categoría'),
                     onSaved: (value) => categoryId = value ?? '',
                   ),
                   TextFormField(
-                    decoration: const InputDecoration(labelText: 'ID del Proveedor'),
+                    decoration:
+                        const InputDecoration(labelText: 'ID del Proveedor'),
                     onSaved: (value) => supplierId = value ?? '',
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Imagen URL'),
-                    onSaved: (value) => image = value ?? '',
                   ),
                 ],
               ),
@@ -105,7 +120,8 @@ class AddProducts extends StatelessWidget {
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
-                  _addProduct(name, price, description, quantity, categoryId, supplierId, image);
+                  _addProduct(context,id, name, price, description, quantity,
+                      categoryId, supplierId);
                   Navigator.of(context).pop();
                 }
               },
@@ -116,15 +132,26 @@ class AddProducts extends StatelessWidget {
     );
   }
 
-  void _addProduct(String name, String price, String description, String quantity, String categoryId, String supplierId, String image) {
+  void _addProduct(
+      BuildContext context,
+      String id,
+      String name,
+      String price,
+      String description,
+      String quantity,
+      String categoryId,
+      String supplierId,) {
     productoService.addProduct({
+      'id': id,
       'name': name,
       'price': price,
       'description': description,
       'quantity': quantity,
       'category_id': categoryId,
       'supplier_id': supplierId,
-      'image': image,
     });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Productos agregado exitosamente')),
+    );
   }
 }

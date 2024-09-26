@@ -33,7 +33,10 @@ class _CategoriesListState extends State<CategoriesList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Todas las categorías'),
+        title: const Text('Todas las categorias',
+            style: TextStyle(color: Color(0xFFFAFAFA))),
+        backgroundColor: const Color(0xFF09184D),
+        centerTitle: true,
       ),
       body: FutureBuilder<List<Widget>>(
         future: _futureCategories,

@@ -28,7 +28,7 @@ class Supplierssingle extends StatefulWidget {
 }
 
 class _SupplierssingleState extends State<Supplierssingle> {
-  Color morado = const Color(0xFF7E57C2);
+  Color morado = Color(0xFF09184D);
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +124,8 @@ class _SupplierssingleState extends State<Supplierssingle> {
           _showEditSupplierDialog(context);
         },
         backgroundColor: morado,
-        child: const Icon(Icons.edit),
+        child: const Icon(Icons.edit,
+                    color: Colors.white),
       ),
     );
   }
