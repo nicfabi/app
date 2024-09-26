@@ -34,8 +34,9 @@ class _SupplierssingleState extends State<Supplierssingle> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.name} ${widget.lastname}'),
+        title: Text('${widget.name} ${widget.lastname}', style: TextStyle(color: Color(0xFFFAFAFA))),
         backgroundColor: morado,
+        centerTitle: true,
       ),
       body: Center(
         child: Card(
@@ -48,13 +49,13 @@ class _SupplierssingleState extends State<Supplierssingle> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 50,
-                  backgroundColor: Colors.purple[100],
+                  backgroundColor: Color(0xFF09184D),
                   child: Icon(
                     Icons.person,
                     size: 50,
-                    color: Colors.purple[700],
+                    color: Colors.white,
                   ),
                 ),
                 const SizedBox(height: 10),

@@ -17,7 +17,7 @@ class HomePage extends GetView<HomePageController> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              child: Text('Escanear Código'),
+              child: Text('Escanear Código', style: TextStyle(color: Color(0xFF09184D))),
               onPressed: () => controller.escanearCodigoBarras(context),
             ),
           ],

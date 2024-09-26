@@ -50,8 +50,7 @@ class AddProducts extends StatelessWidget {
 
   void _showAddProductDialog(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
-    String 
-        id = '',
+    String id = '',
         name = '',
         price = '',
         description = '',
@@ -71,7 +70,7 @@ class AddProducts extends StatelessWidget {
                 children: <Widget>[
                   TextFormField(
                     decoration: const InputDecoration(labelText: 'ID'),
-                    onSaved: (value) => name = value ?? '',
+                    onSaved: (value) => id = value ?? '',
                     validator: (value) => value!.isEmpty
                         ? 'Por favor ingrese el ID del producto'
                         : null,
@@ -120,7 +119,7 @@ class AddProducts extends StatelessWidget {
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
-                  _addProduct(context,id, name, price, description, quantity,
+                  _addProduct(context, id, name, price, description, quantity,
                       categoryId, supplierId);
                   Navigator.of(context).pop();
                 }
@@ -133,14 +132,15 @@ class AddProducts extends StatelessWidget {
   }
 
   void _addProduct(
-      BuildContext context,
-      String id,
-      String name,
-      String price,
-      String description,
-      String quantity,
-      String categoryId,
-      String supplierId,) {
+    BuildContext context,
+    String id,
+    String name,
+    String price,
+    String description,
+    String quantity,
+    String categoryId,
+    String supplierId,
+  ) {
     productoService.addProduct({
       'id': id,
       'name': name,

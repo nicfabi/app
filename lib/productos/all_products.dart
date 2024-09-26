@@ -23,7 +23,7 @@ class ProductoService extends GetxController {
         final List<dynamic> data = jsonDecode(responseBody);
         productos.clear();
         data.forEach((producto) {
-          producto['IMAGE'] = 'https://microtech.icu:5000/${producto['IMAGE']}';
+          //producto['IMAGE'] = 'https://microtech.icu:5000/${producto['IMAGE']}';
           productos.add(Map<String, dynamic>.from(producto));
         });
       } else {
@@ -136,7 +136,7 @@ class VerProductosPage extends StatelessWidget {
     carritoService.obtenerProductos();
   }
 
-  @override
+@override
 Widget build(BuildContext context) {
   return Scaffold(
     appBar: AppBar(
@@ -161,7 +161,11 @@ Widget build(BuildContext context) {
             margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
             child: ListTile(
               contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-              leading: Image.network(producto['IMAGE'], width: 50, height: 50),
+              leading: const SizedBox(
+                width: 40, // Especifica el ancho del ícono
+                height: 40, // Especifica la altura del ícono
+                child: Icon(Icons.menu, color: Color(0xFF09184D)), // Ícono en lugar de imagen
+              ),
               title: Text(
                 producto['NAME'],
                 style: const TextStyle(fontWeight: FontWeight.bold),
@@ -170,8 +174,7 @@ Widget build(BuildContext context) {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Precio: \$${producto['PRICE'].toString()}'),
-                  Text('Descripción: ${producto['DESCRIPTION']}'),
-                  // Agrega más detalles del producto si es necesario
+                  Text('Cantidad: ${producto['QUANTITY'].toString()}'), // Suponiendo que hay un campo 'QUANTITY'
                 ],
               ),
               onTap: () {
@@ -187,7 +190,132 @@ Widget build(BuildContext context) {
         },
       );
     }),
+    floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _showAddProductDialog(context);
+        },
+        child: const Icon(Icons.add),
+      ),
   );
 }
+
+void _showAddProductDialog(BuildContext context) {
+  final _formKey = GlobalKey<FormState>();
+  String id = '';
+  String name = '';
+  int price = 0;
+  String description = '';
+  int? quantity;
+  int? categoryId;
+  int? supplierId;
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Agregar nuevo producto'),
+        content: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'ID (varchar)'),
+                  onSaved: (value) => id = value ?? '',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingrese el ID';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Nombre'),
+                  onSaved: (value) => name = value ?? '',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingrese el nombre';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Precio'),
+                  keyboardType: TextInputType.number,
+                  onSaved: (value) => price = int.tryParse(value ?? '0') ?? 0,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingrese el precio';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Descripción'),
+                  onSaved: (value) => description = value ?? '',
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Cantidad'),
+                  keyboardType: TextInputType.number,
+                  onSaved: (value) => quantity = value != null && value.isNotEmpty ? int.tryParse(value) : null,
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'ID de Categoría'),
+                  keyboardType: TextInputType.number,
+                  onSaved: (value) => categoryId = value != null && value.isNotEmpty ? int.tryParse(value) : null,
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'ID de Proveedor'),
+                  keyboardType: TextInputType.number,
+                  onSaved: (value) => supplierId = value != null && value.isNotEmpty ? int.tryParse(value) : null,
+                ),
+              ],
+            ),
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Cancelar'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: const Text('Agregar'),
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                _formKey.currentState!.save();
+                _addProduct(context, id, name, price, description, quantity, categoryId, supplierId);
+                Navigator.of(context).pop();
+              }
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void _addProduct(BuildContext context, String id, String name, int price, String description, int? quantity, int? categoryId, int? supplierId) {
+  // Aquí llamas a tu método addProduct del ProductoService
+  carritoService.addProduct({
+    'ID': id,
+    'NAME': name,
+    'PRICE': price,
+    'DESCRIPTION': description,
+    'QUANTITY': quantity,
+    'CATEGORY_ID': categoryId,
+    'SUPPLIER_ID': supplierId,
+  }).then((_) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Producto agregado exitosamente')),
+    );
+  }).catchError((error) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Error al agregar el producto')),
+    );
+  });
+}
+
 
 }

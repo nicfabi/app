@@ -26,7 +26,8 @@ class _CategoriesSingleState extends State<CategoriesSingle> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.name),
+        title: Text(widget.name, style: TextStyle(color: Color(0xFFFAFAFA))),
+        centerTitle: true,
         backgroundColor: morado,
       ),
       body: Center(
@@ -40,13 +41,13 @@ class _CategoriesSingleState extends State<CategoriesSingle> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 50,
-                  backgroundColor: Colors.purple[100],
+                  backgroundColor: Color(0xFF09184D),
                   child: Icon(
                     Icons.category_outlined,
                     size: 50,
-                    color: Colors.purple[700],
+                    color: Colors.white,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -98,7 +99,7 @@ class _CategoriesSingleState extends State<CategoriesSingle> {
           _showEditSupplierDialog(context);
         },
         backgroundColor: morado,
-        child: const Icon(Icons.edit),
+        child: const Icon(Icons.edit, color: Colors.white),
       ),
     );
   }
