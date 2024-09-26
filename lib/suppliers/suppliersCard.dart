@@ -12,7 +12,7 @@ class SuppliersCard extends StatefulWidget {
   final String email;
   final String city;
   final String brand;
-  
+
   final VoidCallback onDelete; // Callback to trigger parent widget's refresh
 
   const SuppliersCard({
@@ -32,12 +32,11 @@ class SuppliersCard extends StatefulWidget {
 }
 
 class _SuppliersCardState extends State<SuppliersCard> {
-  bool _isDeleting = false; 
-  
+  bool _isDeleting = false;
+
   void initState() {
     super.initState();
-    
-  }// To show a loading state when deleting
+  } // To show a loading state when deleting
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +47,8 @@ class _SuppliersCardState extends State<SuppliersCard> {
       ),
       margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
         leading: const Icon(Icons.store, color: Color(0xFF7E57C2), size: 40),
         title: Text(
           '${widget.name} ${widget.lastname}',
@@ -65,15 +65,16 @@ class _SuppliersCardState extends State<SuppliersCard> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Supplierssingle(id: widget.id,
-                  name: widget.name,
-                  lastname: widget.lastname,  
-                  phone: widget.phone,
-                  email: widget.email,
-                  city: widget.city,
-                  brand: widget.brand
-
-                  ,)),
+                  MaterialPageRoute(
+                      builder: (context) => Supplierssingle(
+                            id: widget.id,
+                            name: widget.name,
+                            lastname: widget.lastname,
+                            phone: widget.phone,
+                            email: widget.email,
+                            city: widget.city,
+                            brand: widget.brand,
+                          )),
                 );
               },
               child: Text('Ver detalles'),
@@ -83,25 +84,27 @@ class _SuppliersCardState extends State<SuppliersCard> {
         trailing: _isDeleting
             ? const CircularProgressIndicator() // Show loader while deleting
             : IconButton(
-                icon: const Icon(Icons.delete, color: Color.fromARGB(255, 158, 30, 21)),
+                icon: const Icon(Icons.delete,
+                    color: Color.fromARGB(255, 158, 30, 21)),
                 onPressed: () {
                   _showDeleteConfirmationDialog(context);
                 },
               ),
         onTap: () {
           print('Supplier selected: ${widget.name}');
-           Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Supplierssingle(id: widget.id,
-                  name: widget.name,
-                  lastname: widget.lastname,  
-                  phone: widget.phone,
-                  email: widget.email,
-                  city: widget.city,
-                  brand: widget.brand
-
-                  ,)),
-                );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Supplierssingle(
+                      id: widget.id,
+                      name: widget.name,
+                      lastname: widget.lastname,
+                      phone: widget.phone,
+                      email: widget.email,
+                      city: widget.city,
+                      brand: widget.brand,
+                    )),
+          );
         },
       ),
     );
@@ -114,7 +117,8 @@ class _SuppliersCardState extends State<SuppliersCard> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Confirmar eliminación'),
-          content: const Text('¿Está seguro de que desea eliminar este proveedor?'),
+          content:
+              const Text('¿Está seguro de que desea eliminar este proveedor?'),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancelar'),
@@ -127,19 +131,16 @@ class _SuppliersCardState extends State<SuppliersCard> {
               onPressed: () {
                 //_deleteSupplier();
                 setState(() {
-                  SupplierService.deleteSupplier(context, widget.id).then((_){
+                  SupplierService.deleteSupplier(context, widget.id).then((_) {
+                    widget.onDelete();
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text('Proveedor eliminado correctamente'),
                       duration: const Duration(seconds: 2),
                     ));
-                    
-
                   });
-                  
-                  
-              });
+                });
                 Navigator.of(context).pop(); // Close the dialog
-                 // Trigger the delete action
+                // Trigger the delete action
               },
             ),
           ],
@@ -147,6 +148,4 @@ class _SuppliersCardState extends State<SuppliersCard> {
       },
     );
   }
-
-
 }

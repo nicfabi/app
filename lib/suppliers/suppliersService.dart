@@ -8,11 +8,13 @@ class SupplierService {
   static const String addUrl = "https://microtech.icu:5000/suppliers/add";
 
   // Function to fetch suppliers (already implemented)
-  static Future<List<Widget>> fetchSuppliers() async {
+  static Future<List<Widget>> fetchSuppliers(
+      {required Function onDelete}) async {
     try {
       print("Sending request to: $fetchUrl");
       HttpClient client = HttpClient()
-        ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+        ..badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
 
       HttpClientRequest request = await client.getUrl(Uri.parse(fetchUrl));
       request.headers.set('Content-Type', 'application/json; charset=UTF-8');
@@ -33,7 +35,9 @@ class SupplierService {
             city: item["CITY"].toString(),
             brand: item["BRAND"].toString(),
             lastname: item["LASTNAME"].toString(),
-            onDelete: (){}, // Pass a callback function to handle deletion
+            onDelete: () {
+              onDelete();
+            }, // Pass a callback function to handle deletion
           ));
         }
 
@@ -54,7 +58,8 @@ class SupplierService {
       print(supplierData);
       print("Sending request to add supplier at: $addUrl");
       HttpClient client = HttpClient()
-        ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+        ..badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
 
       // Build the request for the add supplier endpoint
       HttpClientRequest request = await client.postUrl(Uri.parse(addUrl));
@@ -81,7 +86,8 @@ class SupplierService {
     final url = 'https://microtech.icu:5000/suppliers/delete/$id';
     try {
       HttpClient client = HttpClient()
-        ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+        ..badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
 
       HttpClientRequest request = await client.deleteUrl(Uri.parse(url));
       request.headers.set('Content-Type', 'application/json');
@@ -91,31 +97,31 @@ class SupplierService {
 
       if (response.statusCode == 200) {
         print("Supplier deleted successfully.");
-        
       } else {
         print("Failed to delete supplier, status code: ${response.statusCode}");
-        
       }
     } catch (e) {
       print("ERROR WHILE SENDING/RECEIVING REQUEST: $e");
-      
     }
   }
 
-
-    static Future<List<Widget>> loadSuppliers() async {
-    return await fetchSuppliers();
+  static Future<List<Widget>> loadSuppliers(
+      {required Function onDelete}) async {
+    return await fetchSuppliers(
+      onDelete: onDelete,
+    );
   }
 
-
-  static Future<void> updateSupplier (Map<String, String> supplierData, String id) async {
+  static Future<void> updateSupplier(
+      Map<String, String> supplierData, String id) async {
     final url = 'https://microtech.icu:5000/suppliers/update/$id';
     //final url = 'http://192.168.0.13:3000/suppliers/update/$id';
     try {
       print(url);
       print(supplierData);
       HttpClient client = HttpClient()
-        ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+        ..badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
 
       HttpClientRequest request = await client.postUrl(Uri.parse(url));
       request.headers.set('Content-Type', 'application/json');
@@ -127,16 +133,11 @@ class SupplierService {
 
       if (response.statusCode == 200) {
         print("Supplier updated successfully.");
-        
       } else {
         print("Failed to update supplier, status code: ${response.statusCode}");
-        
       }
     } catch (e) {
       print("ERROR WHILE SENDING/RECEIVING REQUEST: $e");
-      
     }
   }
-
-
 }

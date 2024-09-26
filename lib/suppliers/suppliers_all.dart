@@ -21,7 +21,12 @@ class _ListaSuppliersState extends State<ListaSuppliers> {
 
   void loadSuppliers_add() {
     setState(() {
-      _futureSuppliers = SupplierService.loadSuppliers();
+      _futureSuppliers = SupplierService.loadSuppliers(
+        onDelete: () {
+          print('Deleted');
+          loadSuppliers_add();
+        },
+      );
     });
   }
 
@@ -135,7 +140,8 @@ class _ListaSuppliersState extends State<ListaSuppliers> {
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
-                  _addSupplier(context, name, phone, email, city, brand, lastname);
+                  _addSupplier(
+                      context, name, phone, email, city, brand, lastname);
                   Navigator.of(context).pop();
                 }
               },
@@ -146,7 +152,8 @@ class _ListaSuppliersState extends State<ListaSuppliers> {
     );
   }
 
-  void _addSupplier(BuildContext context, String name, String phone, String email, String city, String brand, String lastname) {
+  void _addSupplier(BuildContext context, String name, String phone,
+      String email, String city, String brand, String lastname) {
     SupplierService.addSupplier({
       'name': name,
       'phone': phone,
