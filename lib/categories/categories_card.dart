@@ -67,7 +67,7 @@ class _CategoriesCardState extends State<CategoriesCard> {
                           )),
                 );
               },
-              child: Text('Ver detalles'),
+              child: Text('Ver detalles', style: TextStyle(color: Color(0xFF09184D)),),
             ),
           ],
         ),

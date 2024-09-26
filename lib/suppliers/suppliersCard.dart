@@ -49,7 +49,7 @@ class _SuppliersCardState extends State<SuppliersCard> {
       child: ListTile(
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-        leading: const Icon(Icons.store, color: Color(0xFF7E57C2), size: 40),
+        leading: const Icon(Icons.store, color: Color(0xFF09184D), size: 40),
         title: Text(
           '${widget.name} ${widget.lastname}',
           style: const TextStyle(fontWeight: FontWeight.bold),
@@ -82,7 +82,7 @@ class _SuppliersCardState extends State<SuppliersCard> {
                           )),
                 );
               },
-              child: Text('Ver detalles'),
+              child: const Text('Ver detalles', style: TextStyle(color: Color(0xFF09184D))),
             ),
           ],
         ),

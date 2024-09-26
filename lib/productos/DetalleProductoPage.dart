@@ -12,64 +12,107 @@ class DetalleProductoPage extends StatelessWidget {
 
   Color morado = Color(0xFF09184D);
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(
-      title: Text('Productos', style: TextStyle(color: Color(0xFFFAFAFA))),
-      centerTitle: true,
-      backgroundColor: Color(0xFF09184D),
-    ),
-    body: Obx(() {
-      if (productoService.productos.isEmpty) {
-        return Center(child: CircularProgressIndicator());
-      }
-
-      return ListView.builder(
-        itemCount: productoService.productos.length,
-        itemBuilder: (context, index) {
-          final producto = productoService.productos[index];
-          return Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-            child: ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-              leading: SizedBox(
-                width: 40, // Especifica el ancho del ícono
-                height: 40, // Especifica la altura del ícono
-                child: const Icon(Icons.store, color: Color(0xFF09184D)), // Ícono en lugar de imagen
-              ),
-              title: Text(
-                producto['NAME'],
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Precio: \$${producto['PRICE'].toString()}'),
-                  Text('Cantidad: ${producto['QUANTITY'].toString()}'), // Suponiendo que hay un campo 'QUANTITY'
-                ],
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DetalleProductoPage(producto: producto),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          producto['NAME'],
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+        backgroundColor: morado,
+      ),
+      body: Center(
+        child: Card(
+          elevation: 5,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Color(0xFF09184D),
+                  child: Icon(
+                    Icons.menu,
+                    size: 50,
+                    color: Colors.white,
                   ),
-                );
-              },
+                ),
+                const SizedBox(height: 10),
+                // Nombre centrado
+                Text(
+                  producto['NAME'],
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center, // Centrar el texto
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  '\$${producto['PRICE']}',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                _buildDetailRow(Icons.description, 'Descripción', producto['DESCRIPTION']),
+                const SizedBox(height: 10),
+                _buildDetailRow(Icons.category, 'Categoría', producto['CATEGORY_ID'].toString()), // Conversión a String
+                const SizedBox(height: 10),
+                _buildDetailRow(Icons.account_box, 'Proveedor', producto['SUPPLIER_ID'].toString()), // Conversión a String
+                const SizedBox(height: 10),
+                _buildDetailRow(Icons.shopping_cart, 'Cantidad', producto['QUANTITY'].toString()), // Conversión a String
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        _showEditProductDialog(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: morado,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        'Editar',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        await productoService.DeleteProduct(context, producto['ID']);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        'Eliminar',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          );
-        },
-      );
-    }),
-  );
-}
-
-
+          ),
+        ),
+      ),
+      
+    );
+  }
 
   Widget _buildDetailRow(IconData icon, String label, String value) { // Cambiar a String
     return Row(
@@ -170,7 +213,7 @@ Widget build(BuildContext context) {
                     context,
                     producto['ID'],
                     name,
-                    price,
+                    price.toInt(),
                     description,
                     int.tryParse(quantity),
                     int.tryParse(categoryId),
@@ -186,7 +229,7 @@ Widget build(BuildContext context) {
     );
   }
 
-  void _updateProduct(BuildContext context, String id, String name, double price, String description, int? quantity, int? categoryId, int? supplierId) {
+  void _updateProduct(BuildContext context, String id, String name, int price, String description, int? quantity, int? categoryId, int? supplierId) {
     // Lógica para actualizar el producto en tu servicio
     productoService.updateProduct(id, {
       'NAME': name,
