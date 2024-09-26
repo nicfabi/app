@@ -74,6 +74,11 @@ class _SuppliersCardState extends State<SuppliersCard> {
                             email: widget.email,
                             city: widget.city,
                             brand: widget.brand,
+                            callback: () {
+                              setState(() {
+                                widget.onDelete();
+                              });
+                            },
                           )),
                 );
               },
@@ -103,6 +108,11 @@ class _SuppliersCardState extends State<SuppliersCard> {
                       email: widget.email,
                       city: widget.city,
                       brand: widget.brand,
+                      callback: () {
+                        setState(() {
+                          widget.onDelete();
+                        });
+                      },
                     )),
           );
         },

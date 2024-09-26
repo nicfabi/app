@@ -23,7 +23,6 @@ class _ListaSuppliersState extends State<ListaSuppliers> {
     setState(() {
       _futureSuppliers = SupplierService.loadSuppliers(
         onDelete: () {
-          print('Deleted');
           loadSuppliers_add();
         },
       );

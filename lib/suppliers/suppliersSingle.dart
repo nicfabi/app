@@ -3,14 +3,15 @@ import 'package:app/suppliers/suppliersService.dart';
 
 class Supplierssingle extends StatefulWidget {
   final String id;
-  final String name;
-  final String lastname;
-  final String phone;
-  final String email;
-  final String city;
-  final String brand;
+  String name;
+  String lastname;
+  String phone;
+  String email;
+  String city;
+  String brand;
+  final Function callback;
 
-  const Supplierssingle({
+  Supplierssingle({
     required this.id,
     required this.name,
     required this.lastname,
@@ -18,6 +19,7 @@ class Supplierssingle extends StatefulWidget {
     required this.email,
     required this.city,
     required this.brand,
+    required this.callback,
     super.key,
   });
 
@@ -109,7 +111,8 @@ class _SupplierssingleState extends State<Supplierssingle> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(style: TextStyle(color: Colors.white), 'Volver'),
+                  child: const Text(
+                      style: TextStyle(color: Colors.white), 'Volver'),
                 ),
               ],
             ),
@@ -215,7 +218,8 @@ class _SupplierssingleState extends State<Supplierssingle> {
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
-                  _updateSupplier(context, widget.id, name, phone, email, city, brand, lastname);
+                  _updateSupplier(context, widget.id, name, phone, email, city,
+                      brand, lastname);
                   Navigator.of(context).pop();
                 }
               },
@@ -226,16 +230,26 @@ class _SupplierssingleState extends State<Supplierssingle> {
     );
   }
 
-  void _updateSupplier(BuildContext context, String id, String name, String phone, String email, String city, String brand, String lastname) {
+  void _updateSupplier(BuildContext context, String id, String name,
+      String phone, String email, String city, String brand, String lastname) {
     SupplierService.updateSupplier({
-      
       'name': name,
       'phone': phone,
       'email': email,
       'city': city,
       'brand': brand,
       'lastname': lastname,
-    }, id).then((_) {
+    }, id)
+        .then((_) {
+      setState(() {
+        widget.callback();
+        widget.name = name;
+        widget.lastname = lastname;
+        widget.phone = phone;
+        widget.email = email;
+        widget.city = city;
+        widget.brand = brand;
+      });
       // After updating a supplier, you can show a confirmation
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Proveedor actualizado exitosamente')),

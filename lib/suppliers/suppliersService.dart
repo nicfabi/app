@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:app/suppliers/suppliersCard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class SupplierService {
-  static const String fetchUrl = "https://microtech.icu:5000/suppliers/all";
-  static const String addUrl = "https://microtech.icu:5000/suppliers/add";
+  static String dUrl = dotenv.env['URL']!;
+  static String fetchUrl = "$dUrl/suppliers/all";
+  static String addUrl = "$dUrl/suppliers/add";
 
   // Function to fetch suppliers (already implemented)
   static Future<List<Widget>> fetchSuppliers(
@@ -83,7 +85,7 @@ class SupplierService {
   }
 
   static Future<void> deleteSupplier(BuildContext context, String id) async {
-    final url = 'https://microtech.icu:5000/suppliers/delete/$id';
+    final url = '$dUrl/suppliers/delete/$id';
     try {
       HttpClient client = HttpClient()
         ..badCertificateCallback =
@@ -114,7 +116,7 @@ class SupplierService {
 
   static Future<void> updateSupplier(
       Map<String, String> supplierData, String id) async {
-    final url = 'https://microtech.icu:5000/suppliers/update/$id';
+    final url = '$dUrl/suppliers/update/$id';
     //final url = 'http://192.168.0.13:3000/suppliers/update/$id';
     try {
       print(url);
