@@ -62,6 +62,8 @@ class DetalleProductoPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
+                _buildDetailRow(Icons.shopping_cart, 'ID del producto', producto['ID'].toString()), // Conversión a String
+                const SizedBox(height: 10),
                 _buildDetailRow(Icons.description, 'Descripción', producto['DESCRIPTION']),
                 const SizedBox(height: 10),
                 _buildDetailRow(Icons.category, 'Categoría', producto['CATEGORY_ID'].toString()), // Conversión a String
@@ -211,7 +213,7 @@ class DetalleProductoPage extends StatelessWidget {
                   _formKey.currentState!.save();
                   _updateProduct(
                     context,
-                    producto['ID'],
+                    producto['ID'].toString(),
                     name,
                     price.toInt(),
                     description,
@@ -231,14 +233,14 @@ class DetalleProductoPage extends StatelessWidget {
 
   void _updateProduct(BuildContext context, String id, String name, int price, String description, int? quantity, int? categoryId, int? supplierId) {
     // Lógica para actualizar el producto en tu servicio
-    productoService.updateProduct(id, {
-      'NAME': name,
-      'PRICE': price,
-      'DESCRIPTION': description,
-      'QUANTITY': quantity,
-      'CATEGORY_ID': categoryId,
-      'SUPPLIER_ID': supplierId,
-    }).then((_) {
+    productoService.updateProduct({
+      'name': name,
+      'price': price.toString(),
+      'description': description,
+      'quantity': quantity.toString(),
+      'categoryId': categoryId.toString(),
+      'supplierId': supplierId.toString(),
+    }, id).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Producto actualizado exitosamente')),
       );

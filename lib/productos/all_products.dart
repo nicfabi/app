@@ -86,8 +86,12 @@ class ProductoService extends GetxController {
       // Await the response
       HttpClientResponse response = await request.close();
 
+      String responseBody = await response.transform(utf8.decoder).join();
+        print(responseBody);
+
       if (response.statusCode == 200) {
         String responseBody = await response.transform(utf8.decoder).join();
+        print(responseBody);
         print("Product added successfully: $responseBody");
         obtenerProductos();
       } else {
@@ -97,9 +101,6 @@ class ProductoService extends GetxController {
       print("ERROR WHILE SENDING/RECEIVING REQUEST: $e");
     }
   }
-
-  updateProduct(String id, Map<String, Object?> map) {}
-}
 
   Future<void> updateProduct(
       Map<String, String> supplierData, String codigoProducto) async {
@@ -111,23 +112,28 @@ class ProductoService extends GetxController {
         ..badCertificateCallback =
             (X509Certificate cert, String host, int port) => true;
 
+      // Build the request to add the category endpoint
       HttpClientRequest request = await client.postUrl(Uri.parse(url));
-      request.headers.set('Content-Type', 'application/json');
+      request.headers.set('Content-Type', 'application/json; charset=UTF-8');
 
+      // Convert categoryData to JSON and send the request
       request.add(utf8.encode(jsonEncode(supplierData)));
 
+      // Await the response
       HttpClientResponse response = await request.close();
-      print(response);
 
       if (response.statusCode == 200) {
-        print("Supplier updated successfully.");
+        print("Product updated successfully.");
       } else {
-        print("Failed to update supplier, status code: ${response.statusCode}");
+        String json = await response.transform(utf8.decoder).join();
+        print(jsonDecode(json));
+        print("Failed to update product, status code: ${response.statusCode}");
       }
     } catch (e) {
       print("ERROR WHILE SENDING/RECEIVING REQUEST: $e");
     }
   }
+}
 
 class VerProductosPage extends StatelessWidget {
   final ProductoService carritoService = Get.put(ProductoService());
@@ -136,186 +142,211 @@ class VerProductosPage extends StatelessWidget {
     carritoService.obtenerProductos();
   }
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(
-      title: Text('Productos', style: TextStyle(color: Color(0xFFFAFAFA))),
-      centerTitle: true,
-      backgroundColor: Color(0xFF09184D),
-    ),
-    body: Obx(() {
-      if (carritoService.productos.isEmpty) {
-        return Center(child: CircularProgressIndicator());
-      }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Productos', style: TextStyle(color: Color(0xFFFAFAFA))),
+        centerTitle: true,
+        backgroundColor: Color(0xFF09184D),
+      ),
+      body: Obx(() {
+        if (carritoService.productos.isEmpty) {
+          return Center(child: CircularProgressIndicator());
+        }
 
-      return ListView.builder(
-        itemCount: carritoService.productos.length,
-        itemBuilder: (context, index) {
-          final producto = carritoService.productos[index];
-          return Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-            child: ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-              leading: const SizedBox(
-                width: 40, // Especifica el ancho del ícono
-                height: 40, // Especifica la altura del ícono
-                child: Icon(Icons.menu, color: Color(0xFF09184D)), // Ícono en lugar de imagen
+        return ListView.builder(
+          itemCount: carritoService.productos.length,
+          itemBuilder: (context, index) {
+            final producto = carritoService.productos[index];
+            return Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
               ),
-              title: Text(
-                producto['NAME'],
-                style: const TextStyle(fontWeight: FontWeight.bold),
+              margin:
+                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 20.0, vertical: 10.0),
+                leading: const SizedBox(
+                  width: 40, // Especifica el ancho del ícono
+                  height: 40, // Especifica la altura del ícono
+                  child: Icon(Icons.menu, color: Color(0xFF09184D)),
+                ),
+                title: Text(
+                  producto['NAME'],
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Precio: \$${producto['PRICE'].toString()}'),
+                    Text(
+                        'Cantidad: ${producto['QUANTITY'].toString()}'), // Suponiendo que hay un campo 'QUANTITY'
+                  ],
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          DetalleProductoPage(producto: producto),
+                    ),
+                  );
+                },
               ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Precio: \$${producto['PRICE'].toString()}'),
-                  Text('Cantidad: ${producto['QUANTITY'].toString()}'), // Suponiendo que hay un campo 'QUANTITY'
-                ],
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DetalleProductoPage(producto: producto),
-                  ),
-                );
-              },
-            ),
-          );
-        },
-      );
-    }),
-    floatingActionButton: FloatingActionButton(
+            );
+          },
+        );
+      }),
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           _showAddProductDialog(context);
         },
         child: const Icon(Icons.add),
       ),
-  );
-}
+    );
+  }
 
-void _showAddProductDialog(BuildContext context) {
-  final _formKey = GlobalKey<FormState>();
-  String id = '';
-  String name = '';
-  int price = 0;
-  String description = '';
-  int? quantity;
-  int? categoryId;
-  int? supplierId;
+  void _showAddProductDialog(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
+    String id = '';
+    String name = '';
+    int price = 0;
+    String description = '';
+    int? quantity;
+    int? categoryId;
+    int? supplierId;
 
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Agregar nuevo producto'),
-        content: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'ID (varchar)'),
-                  onSaved: (value) => id = value ?? '',
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor ingrese el ID';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Nombre'),
-                  onSaved: (value) => name = value ?? '',
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor ingrese el nombre';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Precio'),
-                  keyboardType: TextInputType.number,
-                  onSaved: (value) => price = int.tryParse(value ?? '0') ?? 0,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor ingrese el precio';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Descripción'),
-                  onSaved: (value) => description = value ?? '',
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Cantidad'),
-                  keyboardType: TextInputType.number,
-                  onSaved: (value) => quantity = value != null && value.isNotEmpty ? int.tryParse(value) : null,
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'ID de Categoría'),
-                  keyboardType: TextInputType.number,
-                  onSaved: (value) => categoryId = value != null && value.isNotEmpty ? int.tryParse(value) : null,
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'ID de Proveedor'),
-                  keyboardType: TextInputType.number,
-                  onSaved: (value) => supplierId = value != null && value.isNotEmpty ? int.tryParse(value) : null,
-                ),
-              ],
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Agregar nuevo producto'),
+          content: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    decoration: const InputDecoration(labelText: 'ID (varchar)'),
+                    onSaved: (value) => id = value ?? '',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor ingrese el ID';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(labelText: 'Nombre'),
+                    onSaved: (value) => name = value ?? '',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor ingrese el nombre';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(labelText: 'Precio'),
+                    keyboardType: TextInputType.number,
+                    onSaved: (value) =>
+                        price = int.tryParse(value ?? '0') ?? 0,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor ingrese el precio';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(labelText: 'Descripción'),
+                    onSaved: (value) => description = value ?? '',
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(labelText: 'Cantidad'),
+                    keyboardType: TextInputType.number,
+                    onSaved: (value) => quantity = value != null &&
+                            value.isNotEmpty
+                        ? int.tryParse(value)
+                        : null,
+                  ),
+                  TextFormField(
+                    decoration:
+                        const InputDecoration(labelText: 'ID de Categoría'),
+                    keyboardType: TextInputType.number,
+                    onSaved: (value) => categoryId = value != null &&
+                            value.isNotEmpty
+                        ? int.tryParse(value)
+                        : null,
+                  ),
+                  TextFormField(
+                    decoration:
+                        const InputDecoration(labelText: 'ID de Proveedor'),
+                    keyboardType: TextInputType.number,
+                    onSaved: (value) => supplierId = value != null &&
+                            value.isNotEmpty
+                        ? int.tryParse(value)
+                        : null,
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Cancelar'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: const Text('Agregar'),
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                _formKey.currentState!.save();
-                _addProduct(context, id, name, price, description, quantity, categoryId, supplierId);
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
                 Navigator.of(context).pop();
-              }
-            },
-          ),
-        ],
+              },
+            ),
+            TextButton(
+              child: const Text('Agregar'),
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
+                  _addProduct(context, id, name, price, description, quantity,
+                      categoryId, supplierId);
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _addProduct(
+      BuildContext context,
+      String id,
+      String name,
+      int price,
+      String description,
+      int? quantity,
+      int? categoryId,
+      int? supplierId) {
+    // Aquí llamas a tu método addProduct del ProductoService
+    carritoService
+        .addProduct({
+          'id': id,
+          'name': name,
+          'price': price,
+          'description': description,
+          'quantity': quantity,
+          'category_id': categoryId,
+          'supplier_id': supplierId,
+        })
+        .then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Producto agregado exitosamente')),
       );
-    },
-  );
-}
-
-void _addProduct(BuildContext context, String id, String name, int price, String description, int? quantity, int? categoryId, int? supplierId) {
-  // Aquí llamas a tu método addProduct del ProductoService
-  carritoService.addProduct({
-    'ID': id,
-    'NAME': name,
-    'PRICE': price,
-    'DESCRIPTION': description,
-    'QUANTITY': quantity,
-    'CATEGORY_ID': categoryId,
-    'SUPPLIER_ID': supplierId,
-  }).then((_) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Producto agregado exitosamente')),
-    );
-  }).catchError((error) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Error al agregar el producto')),
-    );
-  });
-}
-
-
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error al agregar el producto')),
+      );
+    });
+  }
 }
