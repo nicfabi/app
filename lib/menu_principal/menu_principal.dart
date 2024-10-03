@@ -55,42 +55,6 @@ class MenuOpcionesHome extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            //AGREGAR PRODUCTOS
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AddProducts(),
-                  ),
-                );
-              },
-              child: SizedBox(
-                width: 300,
-                height: 80,
-                child: Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Row(
-                      children: <Widget>[
-                        Icon(Icons.add_box, size: 25, color: Color(0xFF09184D)),
-                        SizedBox(width: 16),
-                        Text(
-                          'Agregar Productos',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-
             //PROVEEDORES
             GestureDetector(
               onTap: () {
