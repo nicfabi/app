@@ -7,6 +7,20 @@ import 'package:get/get.dart';
 class ProductoService extends GetxController {
   var productos = <Map<String, dynamic>>[].obs;
   var productoSeleccionado = Rxn<Map<String, dynamic>>();
+  var searchQuery = ''.obs;
+
+  List<Map<String, dynamic>> get filteredProductos {
+    if (searchQuery.value.isEmpty) {
+      return productos;
+    } else {
+      return productos.where((producto) {
+        return producto['NAME']
+            .toString()
+            .toLowerCase()
+            .contains(searchQuery.value.toLowerCase());
+      }).toList();
+    }
+  }
 
   static const String url = 'https://microtech.icu:5000/products/allProducts';
   Future<void> obtenerProductos() async {
@@ -87,7 +101,7 @@ class ProductoService extends GetxController {
       HttpClientResponse response = await request.close();
 
       String responseBody = await response.transform(utf8.decoder).join();
-        print(responseBody);
+      print(responseBody);
 
       if (response.statusCode == 200) {
         String responseBody = await response.transform(utf8.decoder).join();
@@ -150,56 +164,83 @@ class VerProductosPage extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Color(0xFF09184D),
       ),
-      body: Obx(() {
-        if (carritoService.productos.isEmpty) {
-          return Center(child: CircularProgressIndicator());
-        }
-
-        return ListView.builder(
-          itemCount: carritoService.productos.length,
-          itemBuilder: (context, index) {
-            final producto = carritoService.productos[index];
-            return Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15.0),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              decoration: InputDecoration(
+                labelText: 'Buscar producto',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
               ),
-              margin:
-                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-              child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 20.0, vertical: 10.0),
-                leading: const SizedBox(
-                  width: 40, // Especifica el ancho del ícono
-                  height: 40, // Especifica la altura del ícono
-                  child: Icon(Icons.menu, color: Color(0xFF09184D)),
-                ),
-                title: Text(
-                  producto['NAME'],
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Precio: \$${producto['PRICE'].toString()}'),
-                    Text(
-                        'Cantidad: ${producto['QUANTITY'].toString()}'), // Suponiendo que hay un campo 'QUANTITY'
-                  ],
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          DetalleProductoPage(producto: producto),
+              onChanged: (value) {
+                carritoService.searchQuery.value = value;
+              },
+            ),
+          ),
+          Expanded(
+            child: Obx(() {
+              if (carritoService.productos.isEmpty) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              var productosFiltrados = carritoService.filteredProductos;
+
+              if (productosFiltrados.isEmpty) {
+                return Center(child: Text('No se encontraron productos'));
+              }
+
+              return ListView.builder(
+                itemCount: productosFiltrados.length,
+                itemBuilder: (context, index) {
+                  final producto = productosFiltrados[index];
+                  return Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 10.0, vertical: 6.0),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 10.0),
+                      leading: const SizedBox(
+                        width: 40, // Especifica el ancho del ícono
+                        height: 40, // Especifica la altura del ícono
+                        child: Icon(Icons.menu, color: Color(0xFF09184D)),
+                      ),
+                      title: Text(
+                        producto['NAME'],
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Precio: \$${producto['PRICE'].toString()}'),
+                          Text(
+                              'Cantidad: ${producto['QUANTITY'].toString()}'), // Suponiendo que hay un campo 'QUANTITY'
+                        ],
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                DetalleProductoPage(producto: producto),
+                          ),
+                        );
+                      },
                     ),
                   );
                 },
-              ),
-            );
-          },
-        );
-      }),
+              );
+            }),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _showAddProductDialog(context);
@@ -230,7 +271,8 @@ class VerProductosPage extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   TextFormField(
-                    decoration: const InputDecoration(labelText: 'ID (varchar)'),
+                    decoration:
+                        const InputDecoration(labelText: 'ID (varchar)'),
                     onSaved: (value) => id = value ?? '',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -252,8 +294,7 @@ class VerProductosPage extends StatelessWidget {
                   TextFormField(
                     decoration: const InputDecoration(labelText: 'Precio'),
                     keyboardType: TextInputType.number,
-                    onSaved: (value) =>
-                        price = int.tryParse(value ?? '0') ?? 0,
+                    onSaved: (value) => price = int.tryParse(value ?? '0') ?? 0,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Por favor ingrese el precio';
@@ -268,28 +309,28 @@ class VerProductosPage extends StatelessWidget {
                   TextFormField(
                     decoration: const InputDecoration(labelText: 'Cantidad'),
                     keyboardType: TextInputType.number,
-                    onSaved: (value) => quantity = value != null &&
-                            value.isNotEmpty
-                        ? int.tryParse(value)
-                        : null,
+                    onSaved: (value) => quantity =
+                        value != null && value.isNotEmpty
+                            ? int.tryParse(value)
+                            : null,
                   ),
                   TextFormField(
                     decoration:
                         const InputDecoration(labelText: 'ID de Categoría'),
                     keyboardType: TextInputType.number,
-                    onSaved: (value) => categoryId = value != null &&
-                            value.isNotEmpty
-                        ? int.tryParse(value)
-                        : null,
+                    onSaved: (value) => categoryId =
+                        value != null && value.isNotEmpty
+                            ? int.tryParse(value)
+                            : null,
                   ),
                   TextFormField(
                     decoration:
                         const InputDecoration(labelText: 'ID de Proveedor'),
                     keyboardType: TextInputType.number,
-                    onSaved: (value) => supplierId = value != null &&
-                            value.isNotEmpty
-                        ? int.tryParse(value)
-                        : null,
+                    onSaved: (value) => supplierId =
+                        value != null && value.isNotEmpty
+                            ? int.tryParse(value)
+                            : null,
                   ),
                 ],
               ),
@@ -319,27 +360,18 @@ class VerProductosPage extends StatelessWidget {
     );
   }
 
-  void _addProduct(
-      BuildContext context,
-      String id,
-      String name,
-      int price,
-      String description,
-      int? quantity,
-      int? categoryId,
-      int? supplierId) {
+  void _addProduct(BuildContext context, String id, String name, int price,
+      String description, int? quantity, int? categoryId, int? supplierId) {
     // Aquí llamas a tu método addProduct del ProductoService
-    carritoService
-        .addProduct({
-          'id': id,
-          'name': name,
-          'price': price,
-          'description': description,
-          'quantity': quantity,
-          'category_id': categoryId,
-          'supplier_id': supplierId,
-        })
-        .then((_) {
+    carritoService.addProduct({
+      'id': id,
+      'name': name,
+      'price': price,
+      'description': description,
+      'quantity': quantity,
+      'category_id': categoryId,
+      'supplier_id': supplierId,
+    }).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Producto agregado exitosamente')),
       );

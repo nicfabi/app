@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:app/suppliers/suppliersService.dart';
+import 'suppliersCard.dart';
 
 class ListaSuppliers extends StatefulWidget {
   const ListaSuppliers({super.key});
@@ -11,21 +12,39 @@ class ListaSuppliers extends StatefulWidget {
 }
 
 class _ListaSuppliersState extends State<ListaSuppliers> {
-  Future<List<Widget>>? _futureSuppliers;
+  Future<List<SuppliersCard>>? _futureSuppliers; // Cambia aquí el tipo a SuppliersCard
+  List<SuppliersCard> _allSuppliers = []; // Lista completa de proveedores
+  List<SuppliersCard> _filteredSuppliers = []; // Lista filtrada
+  String _searchTerm = ''; // Término de búsqueda
 
   @override
   void initState() {
     super.initState();
-    loadSuppliers_add();
+    loadSuppliers(); // Cargar proveedores al iniciar
   }
 
-  void loadSuppliers_add() {
+  void loadSuppliers() {
     setState(() {
       _futureSuppliers = SupplierService.loadSuppliers(
         onDelete: () {
-          loadSuppliers_add();
+          loadSuppliers(); // Recargar la lista después de eliminar
         },
-      );
+      ).then((suppliers) {
+        _allSuppliers = suppliers.cast<SuppliersCard>(); // Guardar la lista completa de proveedores
+        _filteredSuppliers = suppliers.cast<SuppliersCard>(); // Inicialmente, la lista filtrada es igual a la lista completa
+        return suppliers.cast<SuppliersCard>(); // Retornar la lista de proveedores como SuppliersCard
+      });
+    });
+  }
+
+  void _filterSuppliers(String searchTerm) {
+    setState(() {
+      _searchTerm = searchTerm.toLowerCase(); // Convertir a minúsculas
+      _filteredSuppliers = _allSuppliers.where((supplier) {
+        // Asegúrate de que SuppliersCard tenga propiedades accesibles
+        return supplier.name.toLowerCase().contains(_searchTerm) ||
+            supplier.lastname.toLowerCase().contains(_searchTerm);
+      }).toList();
     });
   }
 
@@ -33,18 +52,37 @@ class _ListaSuppliersState extends State<ListaSuppliers> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Todas los proovedores',
+        title: const Text('Todos los proveedores',
             style: TextStyle(color: Color(0xFFFAFAFA))),
         backgroundColor: const Color(0xFF09184D),
         centerTitle: true,
       ),
-      body: FutureBuilder<List<Widget>>(
+      body: FutureBuilder<List<SuppliersCard>>(
         future: _futureSuppliers,
-        builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
-          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            return ListView(children: snapshot.data!);
-          } else if (snapshot.connectionState == ConnectionState.waiting) {
+        builder: (BuildContext context, AsyncSnapshot<List<SuppliersCard>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+            // Guardar la lista completa de proveedores
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    onChanged: _filterSuppliers,
+                    decoration: InputDecoration(
+                      labelText: 'Buscar proveedores',
+                      border: OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.search),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListView(
+                      children: _filteredSuppliers), // Usar la lista filtrada
+                ),
+              ],
+            );
           } else {
             return const Center(child: Text("No hay datos disponibles."));
           }
@@ -165,7 +203,7 @@ class _ListaSuppliersState extends State<ListaSuppliers> {
       'lastname': lastname,
     }).then((_) {
       // After adding a supplier, reload the list
-      loadSuppliers_add();
+      loadSuppliers();
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
