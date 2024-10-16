@@ -127,6 +127,7 @@ class MenuOpcionesHome extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 16),
 
             //CLIENTES
             GestureDetector(
@@ -150,7 +151,7 @@ class MenuOpcionesHome extends StatelessWidget {
                     padding: EdgeInsets.all(16.0),
                     child: Row(
                       children: <Widget>[
-                        Icon(Icons.category,
+                        Icon(Icons.person,
                             size: 25, color: Color(0xFF09184D)),
                         SizedBox(width: 16),
                         Text(
