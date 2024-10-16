@@ -65,46 +65,39 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: IndexedStack(
-          index: _selectedIndex,
-          children: _views.map((view) {
-            return Navigator(
-              onGenerateRoute: (routeSettings) {
-                return MaterialPageRoute(
-                  builder: (context) => view,
-                );
-              },
-            );
-          }).toList(),
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _views,
+      ),
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          color: Color(0xFF09184D),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
         ),
-        bottomNavigationBar: Container(
-          decoration: const BoxDecoration(
-            color: Color(0xFF09184D),
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-          ),
-          child: BottomNavigationBar(
-            currentIndex: _selectedIndex,
-            onTap: _onItemTapped,
-            items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.qr_code), label: 'Escanear'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.shopping_cart), label: 'Carrito'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.attach_money), label: 'Pago'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.person), label: 'Perfil'),
-            ],
-            selectedItemColor: Colors.white,
-            unselectedItemColor: Colors.grey,
-            backgroundColor: Colors.transparent,
-            type: BottomNavigationBarType.fixed,
-            elevation: 0,
-          ),
-        ));
+        child: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.qr_code), label: 'Escanear'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.shopping_cart), label: 'Carrito'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.attach_money), label: 'Pago'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.person), label: 'Perfil'),
+          ],
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.grey,
+          backgroundColor: Colors.transparent,
+          type: BottomNavigationBarType.fixed,
+          elevation: 0,
+        ),
+      ),
+    );
   }
 }

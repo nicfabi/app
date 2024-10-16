@@ -1,4 +1,5 @@
 import 'package:app/categories/categories_list.dart';
+import 'package:app/customers/customers_all.dart';
 import 'package:app/productos/add_products.dart';
 import 'package:app/productos/all_products.dart';
 import 'package:app/suppliers/suppliers_all.dart';
@@ -118,6 +119,42 @@ class MenuOpcionesHome extends StatelessWidget {
                         SizedBox(width: 16),
                         Text(
                           'Categorías',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            //CLIENTES
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ListaCustomers(),
+                  ),
+                );
+              },
+              child: SizedBox(
+                width: 300,
+                height: 80,
+                child: Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Row(
+                      children: <Widget>[
+                        Icon(Icons.category,
+                            size: 25, color: Color(0xFF09184D)),
+                        SizedBox(width: 16),
+                        Text(
+                          'Clientes',
                           style: TextStyle(fontSize: 18),
                         ),
                       ],
