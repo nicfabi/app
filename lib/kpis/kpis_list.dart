@@ -1,4 +1,5 @@
 import 'package:app/kpis/data/bar_chart_kpi.dart';
+import 'package:app/kpis/data/kpi_text_field.dart';
 import 'package:app/kpis/data/line_chart_kpi.dart';
 import 'package:app/kpis/kpis_service.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -23,7 +24,7 @@ class _KpisListState extends State<KpisList> {
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(10.0),
         child: ListView(
           children: const [
             // Line chart KPI
@@ -33,12 +34,24 @@ class _KpisListState extends State<KpisList> {
                 x: 'date',
                 y: 'total'),
             SizedBox(height: 16),
+            KpiTextField(
+                fetchData: KpisService.fetchAvgTransactionSize,
+                title: 'ATS',
+                icon: Icons.shopping_cart_rounded),
+            SizedBox(height: 16),
             BarChartKpi(
                 fetchData: KpisService.fetchProductsByDate,
                 title: "Productos",
                 x: "name",
                 y: "quantity"),
             SizedBox(height: 16),
+            KpiTextField(
+              fetchData: KpisService.fetchSalesGrowth,
+              title: 'Crecimiento en ventas',
+              icon: Icons.trending_up_rounded,
+              iconNegative: Icons.trending_down_rounded,
+              isDate: true,
+            ),
             // Bar chart KPI
           ],
         ),

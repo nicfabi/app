@@ -218,8 +218,7 @@ class KpisService {
   }
 
   // Function to fetch average transaction size kpi
-  static Future<double> fetchAvgTransactionSize(
-      int iMonth, int fMonth, int iYear, int fYear) async {
+  static Future<double> fetchAvgTransactionSize() async {
     try {
       HttpClient client = HttpClient()
         ..badCertificateCallback =
