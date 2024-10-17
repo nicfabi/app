@@ -27,16 +27,32 @@ class SuppliersCard extends StatefulWidget {
     required this.onDelete, // Pass a callback function to handle deletion
   });
 
+  get widget => null;
+
   @override
   _SuppliersCardState createState() => _SuppliersCardState();
 }
 
 class _SuppliersCardState extends State<SuppliersCard> {
+  List<Widget> _suppliersList = []; // Lista original de proveedores
+  List<Widget> _filteredSuppliersList = []; // Lista filtrada
+  String _searchTerm = '';
   bool _isDeleting = false;
 
   void initState() {
     super.initState();
-  } // To show a loading state when deleting
+  }
+
+  void _filterSuppliers(String searchTerm) {
+    setState(() {
+      _searchTerm = searchTerm;
+      _filteredSuppliersList = _suppliersList.where((supplier) {
+        final card = supplier as SuppliersCard;
+        return card.name.toLowerCase().contains(searchTerm.toLowerCase()) ||
+              card.lastname.toLowerCase().contains(searchTerm.toLowerCase());
+      }).toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +98,8 @@ class _SuppliersCardState extends State<SuppliersCard> {
                           )),
                 );
               },
-              child: const Text('Ver detalles', style: TextStyle(color: Color(0xFF09184D))),
+              child: const Text('Ver detalles',
+                  style: TextStyle(color: Color(0xFF09184D))),
             ),
           ],
         ),

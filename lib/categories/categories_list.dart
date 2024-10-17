@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_print
+import 'package:app/categories/categories_card.dart';
 import 'package:app/categories/categories_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,6 +13,9 @@ class CategoriesList extends StatefulWidget {
 
 class _CategoriesListState extends State<CategoriesList> {
   Future<List<Widget>>? _futureCategories;
+  List<Widget> _allCategories = [];
+  List<Widget> _filteredCategories = [];
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -26,6 +30,26 @@ class _CategoriesListState extends State<CategoriesList> {
           loadCategories_add();
         },
       );
+      _futureCategories!.then((categories) {
+        setState(() {
+          _allCategories = categories;
+          _filteredCategories = _allCategories;
+        });
+      });
+    });
+  }
+
+  void _filterCategories(String query) {
+    setState(() {
+      _searchQuery = query.toLowerCase();
+      _filteredCategories = _allCategories
+          .where((categoryWidget) {
+            if (categoryWidget is CategoriesCard) {
+              return categoryWidget.name.toLowerCase().contains(_searchQuery);
+            }
+            return false;
+          })
+          .toList();
     });
   }
 
@@ -33,22 +57,40 @@ class _CategoriesListState extends State<CategoriesList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Todas las categorias',
+        title: const Text('Todas las categorías',
             style: TextStyle(color: Color(0xFFFAFAFA))),
         backgroundColor: const Color(0xFF09184D),
         centerTitle: true,
       ),
-      body: FutureBuilder<List<Widget>>(
-        future: _futureCategories,
-        builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
-          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            return ListView(children: snapshot.data!);
-          } else if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else {
-            return const Center(child: Text("No hay datos disponibles."));
-          }
-        },
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              onChanged: (value) => _filterCategories(value),
+              decoration: const InputDecoration(
+                labelText: 'Buscar categoría',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder<List<Widget>>(
+              future: _futureCategories,
+              builder:
+                  (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                  return ListView(children: _filteredCategories);
+                } else {
+                  return const Center(child: Text("No hay datos disponibles."));
+                }
+              },
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

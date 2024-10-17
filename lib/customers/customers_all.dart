@@ -1,50 +1,31 @@
 // ignore_for_file: avoid_print
 
+import 'package:app/customers/customersService.dart';
 import 'package:flutter/material.dart';
-import 'package:app/suppliers/suppliersService.dart';
-import 'suppliersCard.dart';
 
-class ListaSuppliers extends StatefulWidget {
-  const ListaSuppliers({super.key});
+class ListaCustomers extends StatefulWidget {
+  const ListaCustomers({super.key});
 
   @override
-  State<ListaSuppliers> createState() => _ListaSuppliersState();
+  State<ListaCustomers> createState() => _ListaCustomersState();
 }
 
-class _ListaSuppliersState extends State<ListaSuppliers> {
-  Future<List<SuppliersCard>>? _futureSuppliers; // Cambia aquí el tipo a SuppliersCard
-  List<SuppliersCard> _allSuppliers = []; // Lista completa de proveedores
-  List<SuppliersCard> _filteredSuppliers = []; // Lista filtrada
-  String _searchTerm = ''; // Término de búsqueda
+class _ListaCustomersState extends State<ListaCustomers> {
+  Future<List<Widget>>? _futureCustomers;
 
   @override
   void initState() {
     super.initState();
-    loadSuppliers(); // Cargar proveedores al iniciar
+    loadCustomers_add();
   }
 
-  void loadSuppliers() {
+  void loadCustomers_add() {
     setState(() {
-      _futureSuppliers = SupplierService.loadSuppliers(
+      _futureCustomers = CustomersService.loadCustomers(
         onDelete: () {
-          loadSuppliers(); // Recargar la lista después de eliminar
+          loadCustomers_add();
         },
-      ).then((suppliers) {
-        _allSuppliers = suppliers.cast<SuppliersCard>(); // Guardar la lista completa de proveedores
-        _filteredSuppliers = suppliers.cast<SuppliersCard>(); // Inicialmente, la lista filtrada es igual a la lista completa
-        return suppliers.cast<SuppliersCard>(); // Retornar la lista de proveedores como SuppliersCard
-      });
-    });
-  }
-
-  void _filterSuppliers(String searchTerm) {
-    setState(() {
-      _searchTerm = searchTerm.toLowerCase(); // Convertir a minúsculas
-      _filteredSuppliers = _allSuppliers.where((supplier) {
-        // Asegúrate de que SuppliersCard tenga propiedades accesibles
-        return supplier.name.toLowerCase().contains(_searchTerm) ||
-            supplier.lastname.toLowerCase().contains(_searchTerm);
-      }).toList();
+      );
     });
   }
 
@@ -57,32 +38,13 @@ class _ListaSuppliersState extends State<ListaSuppliers> {
         backgroundColor: const Color(0xFF09184D),
         centerTitle: true,
       ),
-      body: FutureBuilder<List<SuppliersCard>>(
-        future: _futureSuppliers,
-        builder: (BuildContext context, AsyncSnapshot<List<SuppliersCard>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+      body: FutureBuilder<List<Widget>>(
+        future: _futureCustomers,
+        builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
+          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+            return ListView(children: snapshot.data!);
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            // Guardar la lista completa de proveedores
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    onChanged: _filterSuppliers,
-                    decoration: InputDecoration(
-                      labelText: 'Buscar proveedores',
-                      border: OutlineInputBorder(),
-                      prefixIcon: const Icon(Icons.search),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: ListView(
-                      children: _filteredSuppliers), // Usar la lista filtrada
-                ),
-              ],
-            );
           } else {
             return const Center(child: Text("No hay datos disponibles."));
           }
@@ -90,27 +52,27 @@ class _ListaSuppliersState extends State<ListaSuppliers> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showAddSupplierDialog(context);
+          _showAddCustomerDialog(context);
         },
         child: const Icon(Icons.add),
       ),
     );
   }
 
-  void _showAddSupplierDialog(BuildContext context) {
+  void _showAddCustomerDialog(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
     String name = '';
     String phone = '';
     String email = '';
-    String city = '';
-    String brand = '';
+    String billVia = 'W'; // Default value for bill via
     String lastname = '';
+    String id='';
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Agregar nuevo proveedor'),
+          title: const Text('Agregar nuevo Cliente'),
           content: Form(
             key: _formKey,
             child: SingleChildScrollView(
@@ -126,12 +88,23 @@ class _ListaSuppliersState extends State<ListaSuppliers> {
                       return null;
                     },
                   ),
+                  
                   TextFormField(
                     decoration: const InputDecoration(labelText: 'Apellido'),
                     onSaved: (value) => lastname = value ?? '',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Por favor ingrese el apellido';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(labelText: 'Número de identificación'),
+                    onSaved: (value) => id = value ?? '',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor ingrese el número de identificación';
                       }
                       return null;
                     },
@@ -156,13 +129,29 @@ class _ListaSuppliersState extends State<ListaSuppliers> {
                       return null;
                     },
                   ),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Ciudad'),
-                    onSaved: (value) => city = value ?? '',
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Marca'),
-                    onSaved: (value) => brand = value ?? '',
+                  DropdownButtonFormField<String>(
+                    decoration: const InputDecoration(labelText: 'Medio de facturación'),
+                    value: billVia,
+                    items: const [
+                      DropdownMenuItem(
+                        child: Text('Whatsapp'),
+                        value: 'W',
+                      ),
+                      DropdownMenuItem(
+                        child: Text('Correo'),
+                        value: 'E',
+                      ),
+                      DropdownMenuItem(
+                        child: Text('Whatsapp y Correo'),
+                        value: 'WE',
+                      ),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        billVia = value!;
+                      });
+                    },
+                    onSaved: (value) => billVia = value ?? 'W',
                   ),
                 ],
               ),
@@ -180,8 +169,8 @@ class _ListaSuppliersState extends State<ListaSuppliers> {
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
-                  _addSupplier(
-                      context, name, phone, email, city, brand, lastname);
+                  _addCustomer(
+                      context, name, phone, email, billVia, lastname, id);
                   Navigator.of(context).pop();
                 }
               },
@@ -192,22 +181,22 @@ class _ListaSuppliersState extends State<ListaSuppliers> {
     );
   }
 
-  void _addSupplier(BuildContext context, String name, String phone,
-      String email, String city, String brand, String lastname) {
-    SupplierService.addSupplier({
+  void _addCustomer(BuildContext context, String name, String phone,
+      String email, String billVia, String lastname, String id) {
+    CustomersService.addCustomer({
+      'id': id,
       'name': name,
       'phone': phone,
       'email': email,
-      'city': city,
-      'brand': brand,
+      'bill_via': billVia,
       'lastname': lastname,
     }).then((_) {
-      // After adding a supplier, reload the list
-      loadSuppliers();
+      // After adding a customer, reload the list
+      loadCustomers_add();
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Proveedor agregado exitosamente')),
+      const SnackBar(content: Text('Cliente agregado exitosamente')),
     );
   }
 }
