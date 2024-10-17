@@ -114,7 +114,7 @@ class _KpiTextFieldState extends State<KpiTextField> {
                   Text(
                     widget.isDate || widget.isPercentage
                         ? _value.toStringAsFixed(2) + " %"
-                        : _value.toString(),
+                        : _value.toStringAsFixed(2) + " P/T",
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.normal,

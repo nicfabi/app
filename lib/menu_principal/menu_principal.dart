@@ -165,6 +165,7 @@ class MenuOpcionesHome extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 16),
 
             //CLIENTES
             GestureDetector(
