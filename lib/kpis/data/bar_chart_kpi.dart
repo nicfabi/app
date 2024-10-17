@@ -7,7 +7,10 @@ class BarChartKpi extends StatefulWidget {
   final String x;
   final String y;
   final bool isTopProducts;
+  final bool isAnotherTop;
   final bool most;
+  final String tipTitle;
+
   const BarChartKpi(
       {super.key,
       required this.fetchData,
@@ -15,7 +18,9 @@ class BarChartKpi extends StatefulWidget {
       required this.x,
       required this.y,
       this.isTopProducts = false,
-      this.most = true});
+      this.isAnotherTop = false,
+      this.most = true,
+      this.tipTitle = "Cantidad"});
 
   @override
   _BarChartKpiState createState() => _BarChartKpiState();
@@ -31,13 +36,21 @@ class _BarChartKpiState extends State<BarChartKpi> {
     super.initState();
     barGroups = [];
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!widget.isTopProducts) {
+      if (!widget.isTopProducts && !widget.isAnotherTop) {
         widget
             .fetchData(
           DateTime.now().subtract(const Duration(days: 30)).toString(),
           DateTime.now().toString(),
         )
             .then((data) {
+          setState(() {
+            globalData = data;
+            barGroups = _parseData(data);
+          });
+        });
+        return;
+      } else if (widget.isAnotherTop) {
+        widget.fetchData().then((data) {
           setState(() {
             globalData = data;
             barGroups = _parseData(data);
@@ -91,7 +104,8 @@ class _BarChartKpiState extends State<BarChartKpi> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                !widget.isTopProducts
+                !widget.isTopProducts ||
+                        (!widget.isAnotherTop && !widget.isTopProducts)
                     ? IconButton(
                         icon: const Icon(Icons.date_range),
                         onPressed: () => _selectDateRange(context),

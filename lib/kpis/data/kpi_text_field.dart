@@ -6,13 +6,16 @@ class KpiTextField extends StatefulWidget {
   final IconData icon;
   final IconData iconNegative;
   final bool isDate;
+  final bool isPercentage;
+
   const KpiTextField(
       {super.key,
       required this.fetchData,
       required this.title,
       required this.icon,
       this.iconNegative = Icons.trending_down_rounded,
-      this.isDate = false});
+      this.isDate = false,
+      this.isPercentage = false});
 
   @override
   _KpiTextFieldState createState() => _KpiTextFieldState();
@@ -109,7 +112,7 @@ class _KpiTextFieldState extends State<KpiTextField> {
                   ),
                   const SizedBox(width: 16),
                   Text(
-                    widget.isDate
+                    widget.isDate || widget.isPercentage
                         ? _value.toStringAsFixed(2) + " %"
                         : _value.toString(),
                     style: const TextStyle(
