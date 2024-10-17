@@ -69,9 +69,18 @@ class _CustomersSingleState extends State<CustomersSingle> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    Icon(Icons.book, color: morado),
+                    const SizedBox(width: 10),
+                    Text('Número de identificación: ${widget.id}'),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
                     Icon(Icons.phone, color: morado),
                     const SizedBox(width: 10),
-                    Text(widget.phone),
+                    Text('Teléfono: ${widget.phone}'),
                   ],
                 ),
                 const SizedBox(height: 10),
@@ -80,7 +89,7 @@ class _CustomersSingleState extends State<CustomersSingle> {
                   children: [
                     Icon(Icons.email, color: morado),
                     const SizedBox(width: 10),
-                    Text(widget.email),
+                    Text('Email: ${widget.email}'),
                   ],
                 ),
                 const SizedBox(height: 20),

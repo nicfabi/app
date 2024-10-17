@@ -40,7 +40,7 @@ class PagoPage extends GetView<CarritoService> {
                     children: [
                       TextField(
                         decoration: InputDecoration(
-                          hintText: 'Ingrese el ID del cliente',
+                          hintText: 'Ingrese el número de identificación del cliente',
                           filled: true,
                           fillColor: Colors.grey[200],
                           border: OutlineInputBorder(
