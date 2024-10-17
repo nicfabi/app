@@ -75,7 +75,7 @@ class _LineChartKpiState extends State<LineChartKpi> {
                   widget.title,
                   style: const TextStyle(
                     color: Color.fromARGB(255, 52, 9, 77),
-                    fontSize: 25,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

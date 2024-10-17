@@ -178,8 +178,7 @@ class KpisService {
   }
 
   // Function to fetch sales growth kpi
-  static Future<double> fetchSalesGrowth(
-      int iMonth, int fMonth, int iYear, int fYear) async {
+  static Future<double> fetchSalesGrowth(String iDate, String fDate) async {
     try {
       HttpClient client = HttpClient()
         ..badCertificateCallback =
@@ -191,10 +190,8 @@ class KpisService {
       request.add(
         utf8.encode(
           jsonEncode({
-            'iMonth': iMonth,
-            'fMonth': fMonth,
-            'iYear': iYear,
-            'fYear': fYear,
+            'iDate': iDate,
+            'fDate': fDate,
           }),
         ),
       );
@@ -204,7 +201,7 @@ class KpisService {
       if (response.statusCode == 200) {
         String jsonString = await response.transform(utf8.decoder).join();
         dynamic jsonData = jsonDecode(jsonString);
-        double salesGrowth = jsonData["salesGrowth"];
+        double salesGrowth = double.parse(jsonData["salesGrowth"].toString());
         return salesGrowth;
       } else {
         print(
@@ -233,11 +230,77 @@ class KpisService {
       if (response.statusCode == 200) {
         String jsonString = await response.transform(utf8.decoder).join();
         dynamic jsonData = jsonDecode(jsonString);
-        double avgTransSize = jsonData["avgTransactionSize"];
+        double avgTransSize =
+            double.parse(jsonData["avgTransactionSize"].toString());
         return avgTransSize;
       } else {
+        print("Failed to load ATS, status code: ${response.statusCode}");
+        return 0.0;
+      }
+    } catch (e) {
+      print("ERROR WHILE SENDING/RECEIVING REQUEST: $e");
+      return 0.0;
+    }
+  }
+
+  // Function to fetch top categories
+  static Future<List<Map<String, String>>> fetchTopCategories() async {
+    try {
+      HttpClient client = HttpClient()
+        ..badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+
+      HttpClientRequest request =
+          await client.getUrl(Uri.parse("$fetchDataUrl/top-categories"));
+      request.headers.set('Content-Type', 'application/json; charset=UTF-8');
+
+      HttpClientResponse response = await request.close();
+
+      if (response.statusCode == 200) {
+        String jsonString = await response.transform(utf8.decoder).join();
+        dynamic jsonData = jsonDecode(jsonString);
+        List items = jsonData["categories"];
+        List<Map<String, String>> categories = [];
+
+        for (var item in items) {
+          categories.add({
+            "name": item["name"].toString(),
+            "percentage": item["quantity"].toString(),
+          });
+        }
+
+        return categories;
+      } else {
         print(
-            "Failed to load sales growth, status code: ${response.statusCode}");
+            "Failed to load top categories, status code: ${response.statusCode}");
+        return [];
+      }
+    } catch (e) {
+      print("ERROR WHILE SENDING/RECEIVING REQUEST: $e");
+      return [];
+    }
+  }
+
+  // Function to fetch repeat purchase rate kpi
+  static Future<double> fetchRepeatPurchaseRate() async {
+    try {
+      HttpClient client = HttpClient()
+        ..badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+
+      HttpClientRequest request =
+          await client.getUrl(Uri.parse("$fetchKpisUrl/rpr"));
+      request.headers.set('Content-Type', 'application/json; charset=UTF-8');
+
+      HttpClientResponse response = await request.close();
+
+      if (response.statusCode == 200) {
+        String jsonString = await response.transform(utf8.decoder).join();
+        dynamic jsonData = jsonDecode(jsonString);
+        double rpr = double.parse(jsonData["rpr"].toString());
+        return rpr;
+      } else {
+        print("Failed to load RPR, status code: ${response.statusCode}");
         return 0.0;
       }
     } catch (e) {

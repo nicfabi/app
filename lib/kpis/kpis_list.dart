@@ -1,10 +1,9 @@
 import 'package:app/kpis/data/bar_chart_kpi.dart';
 import 'package:app/kpis/data/kpi_text_field.dart';
 import 'package:app/kpis/data/line_chart_kpi.dart';
+import 'package:app/kpis/data/pie_chart_kpi.dart';
 import 'package:app/kpis/kpis_service.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class KpisList extends StatefulWidget {
   const KpisList({super.key});
@@ -35,24 +34,44 @@ class _KpisListState extends State<KpisList> {
                 y: 'total'),
             SizedBox(height: 16),
             KpiTextField(
-                fetchData: KpisService.fetchAvgTransactionSize,
-                title: 'ATS',
-                icon: Icons.shopping_cart_rounded),
-            SizedBox(height: 16),
-            BarChartKpi(
-                fetchData: KpisService.fetchProductsByDate,
-                title: "Productos",
-                x: "name",
-                y: "quantity"),
-            SizedBox(height: 16),
-            KpiTextField(
               fetchData: KpisService.fetchSalesGrowth,
               title: 'Crecimiento en ventas',
               icon: Icons.trending_up_rounded,
               iconNegative: Icons.trending_down_rounded,
               isDate: true,
             ),
-            // Bar chart KPI
+            SizedBox(height: 16),
+            PieChartKpi(
+                fetchData: KpisService.fetchTopCategories,
+                title: "Categorías",
+                x: "name",
+                y: "percentage"),
+            SizedBox(height: 16),
+            BarChartKpi(
+                fetchData: KpisService.fetchProductsByDate,
+                title: "Productos vendidos por fecha",
+                x: "name",
+                y: "quantity"),
+            SizedBox(height: 16),
+            KpiTextField(
+                fetchData: KpisService.fetchAvgTransactionSize,
+                title: 'Tamaño promedio de transacción',
+                icon: Icons.shopping_cart_rounded),
+            SizedBox(height: 16),
+            BarChartKpi(
+                fetchData: KpisService.fetchTopProducts,
+                isTopProducts: true,
+                title: "Productos más vendidos",
+                x: "name",
+                y: "quantity"),
+            SizedBox(height: 16),
+            BarChartKpi(
+                fetchData: KpisService.fetchTopProducts,
+                isTopProducts: true,
+                title: "Productos menos vendidos",
+                most: false,
+                x: "name",
+                y: "quantity"),
           ],
         ),
       ),

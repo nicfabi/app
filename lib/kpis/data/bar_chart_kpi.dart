@@ -1,4 +1,3 @@
-import 'package:app/helper/month.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -7,12 +6,16 @@ class BarChartKpi extends StatefulWidget {
   final String title;
   final String x;
   final String y;
+  final bool isTopProducts;
+  final bool most;
   const BarChartKpi(
       {super.key,
       required this.fetchData,
       required this.title,
       required this.x,
-      required this.y});
+      required this.y,
+      this.isTopProducts = false,
+      this.most = true});
 
   @override
   _BarChartKpiState createState() => _BarChartKpiState();
@@ -28,16 +31,24 @@ class _BarChartKpiState extends State<BarChartKpi> {
     super.initState();
     barGroups = [];
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget
-          .fetchData(
-        DateTime.now().subtract(const Duration(days: 30)).toString(),
-        DateTime.now().toString(),
-      )
-          .then((data) {
+      if (!widget.isTopProducts) {
+        widget
+            .fetchData(
+          DateTime.now().subtract(const Duration(days: 30)).toString(),
+          DateTime.now().toString(),
+        )
+            .then((data) {
+          setState(() {
+            globalData = data;
+            barGroups = _parseData(data);
+          });
+        });
+        return;
+      }
+      widget.fetchData(widget.most).then((data) {
         setState(() {
           globalData = data;
           barGroups = _parseData(data);
-          print(barGroups);
         });
       });
     });
@@ -76,14 +87,16 @@ class _BarChartKpiState extends State<BarChartKpi> {
                   widget.title,
                   style: const TextStyle(
                     color: Color.fromARGB(255, 52, 9, 77),
-                    fontSize: 25,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.date_range),
-                  onPressed: () => _selectDateRange(context),
-                ),
+                !widget.isTopProducts
+                    ? IconButton(
+                        icon: const Icon(Icons.date_range),
+                        onPressed: () => _selectDateRange(context),
+                      )
+                    : const SizedBox.shrink()
               ],
             ),
           ),
@@ -128,8 +141,8 @@ class _BarChartKpiState extends State<BarChartKpi> {
                           },
                           touchTooltipData: BarTouchTooltipData(
                             getTooltipColor: (group) =>
-                                Color.fromARGB(255, 83, 82, 84),
-                            tooltipPadding: EdgeInsets.all(10),
+                                const Color.fromARGB(255, 83, 82, 84),
+                            tooltipPadding: const EdgeInsets.all(10),
                             getTooltipItem: (group, groupIndex, rod, rodIndex) {
                               return BarTooltipItem(
                                 "${_convertLabel(globalData[_touchedIndex][widget.x] ?? "N/A", alwaysShow: false)}\n",
@@ -172,7 +185,7 @@ class _BarChartKpiState extends State<BarChartKpi> {
                         ),
                       ),
                     )
-                  : Center(child: Text("No data available")),
+                  : const Center(child: Text("No data available")),
             ),
           ),
         ],

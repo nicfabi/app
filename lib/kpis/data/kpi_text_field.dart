@@ -26,16 +26,10 @@ class _KpiTextFieldState extends State<KpiTextField> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.isDate) {
-        DateTime initialDate =
-            DateTime(DateTime.now().year, DateTime.now().month - 1, 1);
-        DateTime finalDate =
-            DateTime(DateTime.now().year, DateTime.now().month, 1);
         widget
             .fetchData(
-          initialDate.month,
-          finalDate.month,
-          initialDate.year,
-          finalDate.year,
+          DateTime.now().subtract(const Duration(days: 30)).toString(),
+          DateTime.now().toString(),
         )
             .then((data) {
           setState(() {
@@ -78,13 +72,27 @@ class _KpiTextFieldState extends State<KpiTextField> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                widget.title,
-                style: const TextStyle(
-                  color: Color.fromARGB(255, 52, 9, 77),
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    widget.title,
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 52, 9, 77),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  widget.isDate
+                      ? IconButton(
+                          icon: const Icon(Icons.date_range),
+                          onPressed: () => _selectDateRange(context),
+                        )
+                      : const SizedBox(
+                          width: 0,
+                          height: 0,
+                        ),
+                ],
               ),
               const SizedBox(height: 16),
               Row(
@@ -116,5 +124,23 @@ class _KpiTextFieldState extends State<KpiTextField> {
         ),
       ),
     );
+  }
+
+  Future<void> _selectDateRange(BuildContext context) async {
+    final DateTimeRange? picked = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+    );
+
+    if (picked != null) {
+      final data = await widget.fetchData(
+        picked.start.toString(),
+        picked.end.toString(),
+      );
+      setState(() {
+        _value = data;
+      });
+    }
   }
 }
