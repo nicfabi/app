@@ -57,8 +57,7 @@ class CarritoService extends GetxController {
 
     try {
       final response = await http.post(
-        //Uri.parse(compraUrl),
-        Uri.parse('http://192.168.0.17:3000/shopcart/compra'),
+        Uri.parse(compraUrl),
         headers: headers,
         body: body,
       );
