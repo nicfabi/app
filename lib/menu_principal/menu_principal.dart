@@ -1,4 +1,5 @@
 import 'package:app/categories/categories_list.dart';
+import 'package:app/kpis/kpis_list.dart';
 import 'package:app/productos/add_products.dart';
 import 'package:app/productos/all_products.dart';
 import 'package:app/suppliers/suppliers_all.dart';
@@ -134,7 +135,7 @@ class MenuOpcionesHome extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CategoriesList(),
+                    builder: (context) => KpisList(),
                   ),
                 );
               },

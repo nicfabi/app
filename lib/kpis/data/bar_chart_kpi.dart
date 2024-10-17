@@ -2,12 +2,12 @@ import 'package:app/helper/month.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-class LineChartKpi extends StatefulWidget {
+class BarChartKpi extends StatefulWidget {
   final Function fetchData;
   final String title;
   final String x;
   final String y;
-  const LineChartKpi(
+  const BarChartKpi(
       {super.key,
       required this.fetchData,
       required this.title,
@@ -15,17 +15,17 @@ class LineChartKpi extends StatefulWidget {
       required this.y});
 
   @override
-  _LineChartKpiState createState() => _LineChartKpiState();
+  _BarChartKpiState createState() => _BarChartKpiState();
 }
 
-class _LineChartKpiState extends State<LineChartKpi> {
-  List<FlSpot> spots = [];
+class _BarChartKpiState extends State<BarChartKpi> {
+  List<BarChartGroupData> barGroups = [];
   List<Map<String, String>> globalData = [];
 
   @override
   void initState() {
     super.initState();
-    spots = [];
+    barGroups = [];
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget
           .fetchData(
@@ -35,16 +35,16 @@ class _LineChartKpiState extends State<LineChartKpi> {
           .then((data) {
         setState(() {
           globalData = data;
-          spots = _parseData(data);
-          print(spots);
+          barGroups = _parseData(data);
+          print(barGroups);
         });
       });
     });
   }
 
-  void updateChart(List<FlSpot> data) {
+  void updateChart(List<BarChartGroupData> data) {
     setState(() {
-      spots = data;
+      barGroups = data;
     });
   }
 
@@ -89,27 +89,45 @@ class _LineChartKpiState extends State<LineChartKpi> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
-              child: spots.isNotEmpty
-                  ? LineChart(
-                      LineChartData(
+              child: barGroups.isNotEmpty
+                  ? BarChart(
+                      BarChartData(
                         gridData: const FlGridData(show: false),
-                        borderData: FlBorderData(show: false),
-                        minX: 0,
-                        maxX: globalData.length.toDouble() - 1,
-                        minY: 0,
+                        borderData: FlBorderData(
+                          show: true,
+                          border: const Border(
+                            bottom: BorderSide(
+                              color: Color.fromARGB(255, 52, 9,
+                                  77), // Set the color of the bottom border
+                              width: 2, // Set the width of the bottom border
+                            ),
+                            left: BorderSide.none,
+                            right: BorderSide.none,
+                            top: BorderSide.none,
+                          ),
+                        ),
                         maxY: globalData
                                 .map((e) => double.tryParse(e[widget.y]!) ?? 0)
                                 .reduce((value, element) =>
                                     value > element ? value : element) +
-                            20000,
-                        lineBarsData: [
-                          LineChartBarData(
-                            spots: spots,
-                            isCurved: false,
-                            dotData: const FlDotData(show: false),
-                            belowBarData: BarAreaData(show: true),
+                            2,
+                        barTouchData: BarTouchData(
+                          enabled: false,
+                          touchTooltipData: BarTouchTooltipData(
+                            getTooltipColor: (group) => Colors.transparent,
+                            tooltipPadding: EdgeInsets.zero,
+                            getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                              return BarTooltipItem(
+                                rod.toY.round().toString(),
+                                const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              );
+                            },
                           ),
-                        ],
+                        ),
+                        barGroups: barGroups,
                         titlesData: FlTitlesData(
                           bottomTitles: AxisTitles(
                             sideTitles: SideTitles(
@@ -118,11 +136,9 @@ class _LineChartKpiState extends State<LineChartKpi> {
                               getTitlesWidget: _getBottomTitles,
                             ),
                           ),
-                          leftTitles: AxisTitles(
+                          leftTitles: const AxisTitles(
                             sideTitles: SideTitles(
-                              reservedSize: 50,
-                              showTitles: true,
-                              getTitlesWidget: _getLeftTitles,
+                              showTitles: false,
                             ),
                           ),
                           topTitles: const AxisTitles(
@@ -159,26 +175,34 @@ class _LineChartKpiState extends State<LineChartKpi> {
     }
   }
 
-  List<FlSpot> _parseData(List<Map<String, String>> data) {
-    List<FlSpot> spots = [];
+  List<BarChartGroupData> _parseData(List<Map<String, String>> data) {
+    List<BarChartGroupData> barGroups = [];
     for (int i = 0; i < data.length; i++) {
       if (data[i][widget.y] != null && data[i][widget.y]!.isNotEmpty) {
-        double? amount = double.tryParse(data[i][widget.y]!);
-        if (amount != null) {
-          spots.add(FlSpot(i.toDouble(), amount));
+        double? quantity = double.tryParse(data[i][widget.y]!);
+        if (quantity != null) {
+          barGroups.add(BarChartGroupData(
+            x: i,
+            barRods: [
+              BarChartRodData(
+                toY: quantity,
+              ),
+            ],
+            showingTooltipIndicators: [0],
+          ));
         }
       }
     }
-    return spots;
+    return barGroups;
   }
 
-  String _convertDate(String date) {
+  String _convertLabel(String label) {
     try {
-      DateTime dateTime = DateTime.parse(date);
-      int month = dateTime.month;
-      return "${dateTime.day} ${getMonth(month)}";
+      if (label.length > 3) {
+        return label.substring(0, 3).toUpperCase();
+      }
+      return label;
     } catch (e) {
-      print("ERROR WHILE PARSING DATE: $e");
       return "N/A";
     }
   }
@@ -199,39 +223,8 @@ class _LineChartKpiState extends State<LineChartKpi> {
       return SideTitleWidget(
         axisSide: meta.axisSide,
         space: 20,
-        child: Transform.rotate(
-          angle: -1.5708,
-          child: Text(
-            widget.x == "date" ? _convertDate(label) : label,
-            style: const TextStyle(
-                color: Color.fromARGB(255, 52, 9, 77),
-                fontSize: 14,
-                fontWeight: FontWeight.bold),
-          ),
-        ),
-      );
-    } catch (e) {
-      print("ERROR WHILE PARSING TITLE: $e");
-      return Container();
-    }
-  }
-
-  Widget _getLeftTitles(double value, TitleMeta meta) {
-    try {
-      print(value);
-      if (value % 1 != 0) {
-        return const SizedBox.shrink();
-      }
-
-      String label = value.toInt().toString();
-      if (value.toInt() / 1000 >= 1) {
-        label = "${value.toInt() ~/ 1000}K";
-      }
-      return SideTitleWidget(
-        axisSide: meta.axisSide,
-        space: 10,
         child: Text(
-          label,
+          _convertLabel(label),
           style: const TextStyle(
               color: Color.fromARGB(255, 52, 9, 77),
               fontSize: 14,
