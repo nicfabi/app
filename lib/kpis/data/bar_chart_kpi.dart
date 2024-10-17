@@ -21,6 +21,7 @@ class BarChartKpi extends StatefulWidget {
 class _BarChartKpiState extends State<BarChartKpi> {
   List<BarChartGroupData> barGroups = [];
   List<Map<String, String>> globalData = [];
+  int _touchedIndex = -1;
 
   @override
   void initState() {
@@ -112,17 +113,40 @@ class _BarChartKpiState extends State<BarChartKpi> {
                                     value > element ? value : element) +
                             2,
                         barTouchData: BarTouchData(
-                          enabled: false,
+                          touchCallback: (FlTouchEvent event,
+                              BarTouchResponse? barTouchResponse) {
+                            setState(() {
+                              if (!event.isInterestedForInteractions ||
+                                  barTouchResponse == null ||
+                                  barTouchResponse.spot == null) {
+                                _touchedIndex = -1;
+                                return;
+                              }
+                              _touchedIndex =
+                                  barTouchResponse.spot!.touchedBarGroupIndex;
+                            });
+                          },
                           touchTooltipData: BarTouchTooltipData(
-                            getTooltipColor: (group) => Colors.transparent,
-                            tooltipPadding: EdgeInsets.zero,
+                            getTooltipColor: (group) =>
+                                Color.fromARGB(255, 83, 82, 84),
+                            tooltipPadding: EdgeInsets.all(10),
                             getTooltipItem: (group, groupIndex, rod, rodIndex) {
                               return BarTooltipItem(
-                                rod.toY.round().toString(),
+                                "${_convertLabel(globalData[_touchedIndex][widget.x] ?? "N/A", alwaysShow: false)}\n",
                                 const TextStyle(
-                                  color: Colors.black,
+                                  color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
+                                children: [
+                                  TextSpan(
+                                    text:
+                                        "Cantidad: ${rod.toY.round().toString()}",
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  ),
+                                ],
                               );
                             },
                           ),
@@ -188,7 +212,8 @@ class _BarChartKpiState extends State<BarChartKpi> {
                 toY: quantity,
               ),
             ],
-            showingTooltipIndicators: [0],
+            showingTooltipIndicators:
+                _touchedIndex != -1 ? [_touchedIndex] : [],
           ));
         }
       }
@@ -196,10 +221,16 @@ class _BarChartKpiState extends State<BarChartKpi> {
     return barGroups;
   }
 
-  String _convertLabel(String label) {
+  String _convertLabel(String label, {bool alwaysShow = true}) {
     try {
-      if (label.length > 3) {
+      if (alwaysShow) {
+        if (label.length < 4) {
+          return label.toUpperCase();
+        }
         return label.substring(0, 3).toUpperCase();
+      }
+      if (label.length > 20) {
+        return "${label.substring(0, 20)} ...";
       }
       return label;
     } catch (e) {
