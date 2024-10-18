@@ -84,30 +84,15 @@ class ProductoService extends GetxController {
   Future<void> addProduct(Map<String, dynamic> productData) async {
     const String url = 'https://microtech.icu:5000/products/addProduct';
     try {
-      print(productData);
-      print("Sending request to add product at: $url");
       HttpClient client = HttpClient()
         ..badCertificateCallback =
             (X509Certificate cert, String host, int port) => true;
-
-      // Build the request for the add product endpoint
       HttpClientRequest request = await client.postUrl(Uri.parse(url));
       request.headers.set('Content-Type', 'application/json; charset=UTF-8');
-
-      // Convert productData to JSON and send the request
       request.add(utf8.encode(jsonEncode(productData)));
-
-      // Await the response
       HttpClientResponse response = await request.close();
-
-      String responseBody = await response.transform(utf8.decoder).join();
-      print(responseBody);
-
       if (response.statusCode == 200) {
-        String responseBody = await response.transform(utf8.decoder).join();
-        print(responseBody);
-        print("Product added successfully: $responseBody");
-        obtenerProductos();
+        obtenerProductos(); // Actualiza la lista de productos aquí
       } else {
         print("Failed to add product, status code: ${response.statusCode}");
       }
@@ -125,15 +110,9 @@ class ProductoService extends GetxController {
       HttpClient client = HttpClient()
         ..badCertificateCallback =
             (X509Certificate cert, String host, int port) => true;
-
-      // Build the request to add the category endpoint
       HttpClientRequest request = await client.postUrl(Uri.parse(url));
       request.headers.set('Content-Type', 'application/json; charset=UTF-8');
-
-      // Convert categoryData to JSON and send the request
       request.add(utf8.encode(jsonEncode(supplierData)));
-
-      // Await the response
       HttpClientResponse response = await request.close();
 
       if (response.statusCode == 200) {
@@ -272,7 +251,7 @@ class VerProductosPage extends StatelessWidget {
                 children: <Widget>[
                   TextFormField(
                     decoration:
-                        const InputDecoration(labelText: 'ID (varchar)'),
+                        const InputDecoration(labelText: 'ID del Producto'),
                     onSaved: (value) => id = value ?? '',
                     validator: (value) {
                       if (value == null || value.isEmpty) {

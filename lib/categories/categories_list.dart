@@ -68,10 +68,10 @@ class _CategoriesListState extends State<CategoriesList> {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               onChanged: (value) => _filterCategories(value),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Buscar categoría',
                 prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0),),
               ),
             ),
           ),

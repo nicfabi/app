@@ -2,12 +2,21 @@ import 'package:app/productos/all_products.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class AddProducts extends StatelessWidget {
+class AddProducts extends StatefulWidget {
+  @override
+  _AddProductsState createState() => _AddProductsState();
+}
+
+class _AddProductsState extends State<AddProducts> {
   final ProductoService productoService = Get.put(ProductoService());
 
-  AddProducts() {
+  @override
+  void initState() {
+    super.initState();
     productoService.obtenerProductos();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +35,7 @@ class AddProducts extends StatelessWidget {
               return ListTile(
                 title: Text(producto['name']),
                 subtitle: Text('Precio: \$${producto['price']}'),
-                leading:
-                    Image.network(producto['image'], width: 50, height: 50),
+                leading: Image.network(producto['image'], width: 50, height: 50),
                 trailing: IconButton(
                   icon: const Icon(Icons.delete),
                   onPressed: () {
@@ -71,9 +79,8 @@ class AddProducts extends StatelessWidget {
                   TextFormField(
                     decoration: const InputDecoration(labelText: 'ID'),
                     onSaved: (value) => id = value ?? '',
-                    validator: (value) => value!.isEmpty
-                        ? 'Por favor ingrese el ID del producto'
-                        : null,
+                    validator: (value) =>
+                        value!.isEmpty ? 'Por favor ingrese el ID del producto' : null,
                   ),
                   TextFormField(
                     decoration: const InputDecoration(labelText: 'Nombre'),
@@ -96,13 +103,11 @@ class AddProducts extends StatelessWidget {
                     onSaved: (value) => quantity = value ?? '',
                   ),
                   TextFormField(
-                    decoration:
-                        const InputDecoration(labelText: 'ID de Categoría'),
+                    decoration: const InputDecoration(labelText: 'ID de Categoría'),
                     onSaved: (value) => categoryId = value ?? '',
                   ),
                   TextFormField(
-                    decoration:
-                        const InputDecoration(labelText: 'ID del Proveedor'),
+                    decoration: const InputDecoration(labelText: 'ID del Proveedor'),
                     onSaved: (value) => supplierId = value ?? '',
                   ),
                 ],
@@ -119,8 +124,7 @@ class AddProducts extends StatelessWidget {
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
-                  _addProduct(context, id, name, price, description, quantity,
-                      categoryId, supplierId);
+                  _addProduct(context, id, name, price, description, quantity, categoryId, supplierId);
                   Navigator.of(context).pop();
                 }
               },
@@ -151,7 +155,7 @@ class AddProducts extends StatelessWidget {
       'supplier_id': supplierId,
     });
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Productos agregado exitosamente')),
+      const SnackBar(content: Text('Producto agregado exitosamente')),
     );
   }
 }
