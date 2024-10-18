@@ -12,7 +12,8 @@ class ListaSuppliers extends StatefulWidget {
 }
 
 class _ListaSuppliersState extends State<ListaSuppliers> {
-  Future<List<SuppliersCard>>? _futureSuppliers; // Cambia aquí el tipo a SuppliersCard
+  Future<List<SuppliersCard>>?
+      _futureSuppliers; // Cambia aquí el tipo a SuppliersCard
   List<SuppliersCard> _allSuppliers = []; // Lista completa de proveedores
   List<SuppliersCard> _filteredSuppliers = []; // Lista filtrada
   String _searchTerm = ''; // Término de búsqueda
@@ -30,9 +31,12 @@ class _ListaSuppliersState extends State<ListaSuppliers> {
           loadSuppliers(); // Recargar la lista después de eliminar
         },
       ).then((suppliers) {
-        _allSuppliers = suppliers.cast<SuppliersCard>(); // Guardar la lista completa de proveedores
-        _filteredSuppliers = suppliers.cast<SuppliersCard>(); // Inicialmente, la lista filtrada es igual a la lista completa
-        return suppliers.cast<SuppliersCard>(); // Retornar la lista de proveedores como SuppliersCard
+        _allSuppliers = suppliers
+            .cast<SuppliersCard>(); // Guardar la lista completa de proveedores
+        _filteredSuppliers = suppliers.cast<
+            SuppliersCard>(); // Inicialmente, la lista filtrada es igual a la lista completa
+        return suppliers.cast<
+            SuppliersCard>(); // Retornar la lista de proveedores como SuppliersCard
       });
     });
   }
@@ -59,7 +63,8 @@ class _ListaSuppliersState extends State<ListaSuppliers> {
       ),
       body: FutureBuilder<List<SuppliersCard>>(
         future: _futureSuppliers,
-        builder: (BuildContext context, AsyncSnapshot<List<SuppliersCard>> snapshot) {
+        builder: (BuildContext context,
+            AsyncSnapshot<List<SuppliersCard>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
@@ -72,7 +77,9 @@ class _ListaSuppliersState extends State<ListaSuppliers> {
                     onChanged: _filterSuppliers,
                     decoration: InputDecoration(
                       labelText: 'Buscar proveedores',
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
                       prefixIcon: const Icon(Icons.search),
                     ),
                   ),
