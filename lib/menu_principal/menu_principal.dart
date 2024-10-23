@@ -9,7 +9,7 @@ class MenuOpcionesHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Menu Principal',
+        title: const Text('Menú Principal',
             style: TextStyle(color: Color(0xFFFAFAFA))),
         backgroundColor: const Color(0xFF09184D),
         centerTitle: true,

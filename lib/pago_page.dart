@@ -15,16 +15,22 @@ class PagoPage extends GetView<CarritoService> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Obx(() => Text(
-                  'Total a pagar: \$${controller.total.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.bold),
-                )),
-            const SizedBox(height: 20),
+               Obx(() => Row( // Cambiamos a Row para alinear el icono y el texto
+            mainAxisAlignment: MainAxisAlignment.center, // Centramos el contenido
+            children: [
+              Icon(Icons.monetization_on, size: 30, color: Color(0xFF09184D)),// Icono de dinero
+              const SizedBox(width: 8), // Espacio entre el icono y el texto
+              Text(
+                'Total a pagar: \$${controller.total.toStringAsFixed(2)}',
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+            ],
+          )),
+      const SizedBox(height: 20),
             Obx(() {
               if (controller.total > 0.00) {
                 return ElevatedButton(
-                  child: const Text('Realizar Pago'),
+                  child: const Text('Realizar Pago',style: TextStyle(color: Colors.white,fontSize: 15)),
                   onPressed: () {
                     controller.agregarCarrito(context);
                     Get.snackbar('Pago', 'Pago realizado con éxito');
@@ -32,9 +38,17 @@ class PagoPage extends GetView<CarritoService> {
                         'Factura Enviada', "Factura enviada con éxito!");
                     controller.limpiarCarrito();
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF09184D),
+                    padding: EdgeInsets.symmetric(horizontal: 29, vertical: 13), 
+                    shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30), 
+                  ),
+                  elevation: 10, 
+                  )
                 );
               } else {
-                return Container(); // or any other widget you want to return when the condition is not met
+                return Container(); 
               }
             })
           ],
